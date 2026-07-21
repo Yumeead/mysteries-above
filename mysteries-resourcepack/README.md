@@ -16,6 +16,10 @@
 | `items/music_disc_far.json`  | інгредієнти (69 кейсів) |
 | `items/music_disc_ward.json` | предмети здібностей (`active` / `passive` / `permanent_passive`) |
 
+Моделі здібностей навмисно мають `display` зі `scale: [0,0,0]` на ручних трансформах —
+предмет невидимий у руці, але лишається видимим у GUI. Деталі й межі — у
+`.claude/rules/item-materials.md`.
+
 Додати новий інгредієнт:
 1. Спрайт → `assets/minecraft/textures/item/<id>.png` (16×16 або 32×32).
 2. Модель → `assets/minecraft/models/item/<id>.json` (скопіюй сусідню, заміни id).
