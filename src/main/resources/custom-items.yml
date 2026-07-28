@@ -963,6 +963,173 @@ custom-items:
     custom-model-data: "king_dawn_rooster_blood"
 
   # ============================================
+  # 9 TYRANT
+  # ============================================
+  murloc_bladder:
+    display-name: "§3Міхур Мурлока"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "murloc_bladder"
+
+  man_eating_conch:
+    display-name: "§bЛюдожерна Мушля"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "man_eating_conch"
+
+  murloc_scales:
+    display-name: "§2Луска Мурлока"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "murloc_scales"
+
+  # ============================================
+  # 8 TYRANT
+  # ============================================
+  deep_diver_alveoli:
+    display-name: "§3Альвеоли Глибинного Пірнальника"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "deep_diver_alveoli"
+
+  war_cry_bird_breastbone:
+    display-name: "§fГрудна Кістка Птаха Бойового Крику"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "war_cry_bird_breastbone"
+
+  deep_diver_tongue_half:
+    display-name: "§cПоловина Язика Глибинного Пірнальника"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "deep_diver_tongue_half"
+
+  war_cry_bird_beak_segment:
+    display-name: "§eСегмент Дзьоба Птаха Бойового Крику"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "war_cry_bird_beak_segment"
+
+  # ============================================
+  # 7 TYRANT
+  # ============================================
+  black_scaled_shark_pituitary:
+    display-name: "§8Гіпофіз Чорнолускої Акули"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "black_scaled_shark_pituitary"
+
+  raging_white_dolphin_heart:
+    display-name: "§fСерце Скаженого Білого Дельфіна"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "raging_white_dolphin_heart"
+
+  black_scaled_shark_fin:
+    display-name: "§8Плавець Чорнолускої Акули"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "black_scaled_shark_fin"
+
+  raging_white_dolphin_blood:
+    display-name: "§4Кров Скаженого Білого Дельфіна"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "raging_white_dolphin_blood"
+
+  # ============================================
+  # 6 TYRANT
+  # ============================================
+  blue_shadow_falcon_feather:
+    display-name: "§bКришталеве Перо Блакитного Тіньового Сокола"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "blue_shadow_falcon_feather"
+
+  sea_condor_eyeballs:
+    display-name: "§5Очі Морського Кондора з Драконячим Оком"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "sea_condor_eyeballs"
+
+  blue_shadow_falcon_bone:
+    display-name: "§fКістка Блакитного Тіньового Сокола"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "blue_shadow_falcon_bone"
+
+  sea_condor_feathers:
+    display-name: "§3Пір'я Морського Кондора з Драконячим Оком"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "sea_condor_feathers"
+
+  # ============================================
+  # 5 TYRANT
+  # ============================================
+  siren_throat:
+    display-name: "§bГорло Сирени"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "siren_throat"
+
+  crystal_jellyfish_cluster:
+    display-name: "§bКристалічне Скупчення Кришталевої Медузи"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "crystal_jellyfish_cluster"
+
+  siren_hair_strands:
+    display-name: "§3Пасма Волосся Сирени"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "siren_hair_strands"
+
+  crystal_jellyfish_tentacles:
+    display-name: "§bЩупальця Кришталевої Медузи"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "crystal_jellyfish_tentacles"
+
+  # ============================================
   # SECRET ORDERS (6c)
   # ============================================
   order_cipher_message:

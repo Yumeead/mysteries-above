@@ -1,8 +1,9 @@
-package me.vangoo.pathways.justiciar.abilities;
+package me.vangoo.pathways.common.abilities;
 
 import me.vangoo.domain.abilities.core.IAbilityContext;
 import me.vangoo.domain.abilities.core.PermanentPassiveAbility;
 import me.vangoo.domain.services.SequenceScaler;
+import me.vangoo.domain.valueobjects.AbilityIdentity;
 import me.vangoo.domain.valueobjects.Sequence;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -16,22 +17,41 @@ import java.util.stream.Collectors;
 
 public class PhysicalEnhancement extends PermanentPassiveAbility {
 
+    private final String explicitIdentity; // null → identity береться з назви (типова поведінка)
     private final String abilityName;
     private final String descriptionTemplate;
     private final int hpCalculationBase;
     private final List<PotionEffectType> effectTypes;
 
     private static final double DEFAULT_HEALTH = 20.0;
+    // NIGHT_VISION блимає, коли лишається < 10 с: даємо 30 с і поновлюємо кожні 5 с,
+    // тож залишок ніколи не падає нижче 25 с.
     private static final int REFRESH_PERIOD_TICKS = 100; // 5 секунд
-    private static final int EFFECT_DURATION_TICKS = 120; // 6 секунд
+    private static final int EFFECT_DURATION_TICKS = 600; // 30 секунд
 
     private int tickCounter = 0;
 
     public PhysicalEnhancement(String name, String description, int hpCalculationBase, PotionEffectType... effects) {
+        this(null, name, description, hpCalculationBase, effects);
+    }
+
+    /**
+     * Варіант зі спільним identity: дозволяє одному пасиву прогресувати між Sequence
+     * (сильніша версія замінює слабшу через {@link me.vangoo.domain.services.AbilityTransformer}),
+     * навіть коли назва змінюється. Приклад: Tyrant — Морська спорідненість (Seq 9) →
+     * Штормова Міць (Seq 8), обидві під identity "tyrant_physique".
+     */
+    public PhysicalEnhancement(String identity, String name, String description, int hpCalculationBase, PotionEffectType... effects) {
+        this.explicitIdentity = identity;
         this.abilityName = name;
         this.descriptionTemplate = description;
         this.hpCalculationBase = hpCalculationBase;
         this.effectTypes = Arrays.asList(effects);
+    }
+
+    @Override
+    public AbilityIdentity getIdentity() {
+        return explicitIdentity != null ? AbilityIdentity.of(explicitIdentity) : super.getIdentity();
     }
 
     @Override

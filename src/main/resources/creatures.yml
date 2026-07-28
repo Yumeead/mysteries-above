@@ -462,3 +462,75 @@ creatures:
     spawn:
       natural: { biomes: [SUNFLOWER_PLAINS, SAVANNA_PLATEAU], replace: [], chance: 0.00075 }
       structure: { keys: [mysteries, nova_structures], chance: 0.1 }
+
+  # =========================== TYRANT ===========================
+  # Виняток із загального правила «істоти дають лише main»: у Tyrant частина auxiliary —
+  # це теж частини тіла (язик, кров, кістка), тож вони падають із тієї ж істоти. Ті aux,
+  # що прибиває до дна (луска, плавець, пір'я, волосся, щупальця) — форедж у морській траві.
+  tyrant_murloc_9:
+    base_entity: DROWNED
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: murloc_bladder, weight: 50, min: 1, max: 1 }
+        - { id: man_eating_conch, weight: 40, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [OCEAN, WARM_OCEAN, LUKEWARM_OCEAN, RIVER], replace: [DROWNED], chance: 0.005 }
+      structure: { keys: [], chance: 0.0 }
+
+  tyrant_deep_diver_8:
+    base_entity: DROWNED
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: deep_diver_alveoli, weight: 50, min: 1, max: 1 }
+        - { id: war_cry_bird_breastbone, weight: 40, min: 1, max: 1 }
+        - { id: deep_diver_tongue_half, weight: 40, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [DEEP_OCEAN, DEEP_LUKEWARM_OCEAN, COLD_OCEAN], replace: [DROWNED, GUARDIAN], chance: 0.00375 }
+      structure: { keys: [], chance: 0.0 }
+
+  tyrant_black_scaled_shark_7:
+    base_entity: GUARDIAN
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: black_scaled_shark_pituitary, weight: 50, min: 1, max: 1 }
+        - { id: raging_white_dolphin_heart, weight: 40, min: 1, max: 1 }
+        - { id: raging_white_dolphin_blood, weight: 40, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [OCEAN, DEEP_OCEAN, DEEP_COLD_OCEAN], replace: [GUARDIAN, DROWNED], chance: 0.0025 }
+      structure: { keys: [], chance: 0.0 }
+
+  tyrant_sea_condor_6:
+    base_entity: PHANTOM
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: sea_condor_eyeballs, weight: 50, min: 1, max: 1 }
+        - { id: blue_shadow_falcon_feather, weight: 40, min: 1, max: 1 }
+        - { id: blue_shadow_falcon_bone, weight: 40, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [BEACH, STONY_SHORE, OCEAN, WARM_OCEAN], replace: [PHANTOM, DROWNED], chance: 0.0015 }
+      structure: { keys: [], chance: 0.0 }
+
+  tyrant_siren_5:
+    base_entity: DROWNED
+    tier: apex
+    loot:
+      min_items: 1
+      max_items: 2
+      items:
+        - { id: siren_throat, weight: 50, min: 1, max: 1 }
+        - { id: crystal_jellyfish_cluster, weight: 40, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [DEEP_OCEAN, DEEP_FROZEN_OCEAN], replace: [], chance: 0.00075 }
+      structure: { keys: [mysteries, nova_structures], chance: 0.1 }

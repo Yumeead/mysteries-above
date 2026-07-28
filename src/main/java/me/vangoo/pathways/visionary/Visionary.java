@@ -1,6 +1,6 @@
 package me.vangoo.pathways.visionary;
 
-import me.vangoo.pathways.justiciar.abilities.PhysicalEnhancement;
+import me.vangoo.pathways.common.abilities.PhysicalEnhancement;
 import me.vangoo.pathways.visionary.abilities.*;
 import me.vangoo.domain.entities.Pathway;
 import me.vangoo.domain.entities.PathwayGroup;

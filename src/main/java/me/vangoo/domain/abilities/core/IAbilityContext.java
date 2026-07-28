@@ -35,4 +35,5 @@ public interface IAbilityContext {
     IMessagingContext messaging();
     IContractContext contracts();
     IAmplificationContext amplification();
+    IWaypointContext waypoints();
 }

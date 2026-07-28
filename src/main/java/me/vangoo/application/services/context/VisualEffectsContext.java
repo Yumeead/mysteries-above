@@ -701,15 +701,106 @@ public class VisualEffectsContext implements IVisualEffectsContext {
 
     @Override
     public void playHolyLightning(Location location) {
+        playLightningBolt(location, Color.fromRGB(255, 215, 0));
+        World world = location.getWorld();
+        if (world != null) {
+            world.playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, 0.6f); // церемоніальний акцент кари
+        }
+    }
+
+    @Override
+    public void playLightningBolt(Location location, Color color) {
         final World world = location.getWorld();
         if (world == null) return;
         world.strikeLightningEffect(location); // лише візуал: без вогню й шкоди
         world.spawnParticle(Particle.EXPLOSION, location.clone().add(0, 1, 0), 1); // НЕ FLASH: на 1.21.11 вимагає data org.bukkit.Color
         world.spawnParticle(Particle.END_ROD, location.clone().add(0, 1, 0), 40, 0.3, 1.2, 0.3, 0.05);
-        Particle.DustOptions gold = new Particle.DustOptions(
-                Color.fromRGB(255, 215, 0), 1.4f);
-        world.spawnParticle(Particle.DUST, location.clone().add(0, 1, 0), 30, 0.5, 1.0, 0.5, 0, gold);
+        Particle.DustOptions dust = new Particle.DustOptions(color, 1.4f);
+        world.spawnParticle(Particle.DUST, location.clone().add(0, 1, 0), 30, 0.5, 1.0, 0.5, 0, dust);
         world.playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.2f, 1.5f);
-        world.playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, 0.6f);
+    }
+
+    @Override
+    public void playSurgingWave(Location origin, Vector direction, double length,
+                                double width, Color color, int durationTicks) {
+        World world = origin.getWorld();
+        if (world == null || direction.lengthSquared() < 1e-6 || durationTicks <= 0) return;
+
+        final Vector forward = direction.clone().setY(0).normalize();
+        // перпендикуляр у горизонтальній площині — ширина завіси
+        final Vector side = new Vector(-forward.getZ(), 0, forward.getX());
+        final Particle.DustOptions crest = new Particle.DustOptions(color, 1.4f);
+        final Particle.DustOptions foam = new Particle.DustOptions(Color.fromRGB(235, 245, 255), 0.9f);
+        final double step = length / durationTicks;
+        final int columns = Math.max(3, (int) Math.round(width * 2));
+
+        new BukkitRunnable() {
+            int tick = 0;
+
+            @Override
+            public void run() {
+                if (tick++ >= durationTicks) {
+                    this.cancel();
+                    return;
+                }
+                Location front = origin.clone().add(forward.clone().multiply(step * tick));
+                for (int i = 0; i <= columns; i++) {
+                    double offset = (i / (double) columns - 0.5) * width;
+                    Location base = front.clone().add(side.clone().multiply(offset));
+                    // вертикальна завіса: гребінь угорі, піна/бризки внизу
+                    world.spawnParticle(Particle.DUST, base.clone().add(0, 1.4, 0), 1, 0.05, 0.15, 0.05, 0, crest);
+                    world.spawnParticle(Particle.DUST, base.clone().add(0, 0.7, 0), 1, 0.05, 0.15, 0.05, 0, crest);
+                    world.spawnParticle(Particle.SPLASH, base.clone().add(0, 0.2, 0), 2, 0.1, 0.1, 0.1, 0);
+                    world.spawnParticle(Particle.DUST, base.clone().add(0, 0.1, 0), 1, 0.1, 0.05, 0.1, 0, foam);
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    @Override
+    public void playStandingCurtain(Location center, Vector facing, double width, double height,
+                                    Color color, int durationTicks) {
+        World world = center.getWorld();
+        if (world == null || facing.lengthSquared() < 1e-6 || durationTicks <= 0) return;
+
+        final Vector forward = facing.clone().setY(0).normalize();
+        final Vector side = new Vector(-forward.getZ(), 0, forward.getX());
+        final Particle.DustOptions body = new Particle.DustOptions(color, 1.3f);
+        final Particle.DustOptions foam = new Particle.DustOptions(Color.fromRGB(235, 245, 255), 0.8f);
+        final Location origin = center.clone();
+        final int columns = Math.max(4, (int) Math.round(width * 2));
+        final int levels = Math.max(3, (int) Math.round(height * 2));
+
+        new BukkitRunnable() {
+            int tick = 0;
+
+            @Override
+            public void run() {
+                if (tick++ >= durationTicks) {
+                    this.cancel();
+                    return;
+                }
+                double phase = tick * 0.35;
+                for (int i = 0; i <= columns; i++) {
+                    double offset = (i / (double) columns - 0.5) * width;
+                    // брижі: колона хитається вперед-назад по фазі, тож завіса «тече»
+                    double ripple = Math.sin(phase + offset * 1.2) * 0.18;
+                    Location base = origin.clone()
+                            .add(side.clone().multiply(offset))
+                            .add(forward.clone().multiply(ripple));
+                    for (int lvl = 0; lvl <= levels; lvl++) {
+                        double y = height * lvl / (double) levels;
+                        world.spawnParticle(Particle.DUST, base.clone().add(0, y, 0),
+                                1, 0.04, 0.06, 0.04, 0, body);
+                    }
+                    world.spawnParticle(Particle.DUST, base.clone().add(0, 0.05, 0),
+                            1, 0.1, 0.05, 0.1, 0, foam);
+                    if (tick % 3 == 0) {
+                        world.spawnParticle(Particle.SPLASH, base.clone().add(0, height * 0.5, 0),
+                                1, 0.1, 0.3, 0.1, 0);
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
     }
 }

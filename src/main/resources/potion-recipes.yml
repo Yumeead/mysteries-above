@@ -115,3 +115,20 @@ recipes:
     5:
       main: [king_dawn_rooster_comb, pure_white_brilliant_rock]
       auxiliary: [rosemary, king_dawn_rooster_blood]
+
+  Tyrant:
+    9:
+      main: [murloc_bladder, man_eating_conch]
+      auxiliary: [murloc_scales]
+    8:
+      main: [deep_diver_alveoli, war_cry_bird_breastbone]
+      auxiliary: [deep_diver_tongue_half, war_cry_bird_beak_segment]
+    7:
+      main: [black_scaled_shark_pituitary, raging_white_dolphin_heart]
+      auxiliary: [black_scaled_shark_fin, raging_white_dolphin_blood]
+    6:
+      main: [blue_shadow_falcon_feather, sea_condor_eyeballs]
+      auxiliary: [blue_shadow_falcon_bone, sea_condor_feathers]
+    5:
+      main: [siren_throat, crystal_jellyfish_cluster]
+      auxiliary: [siren_hair_strands, crystal_jellyfish_tentacles]

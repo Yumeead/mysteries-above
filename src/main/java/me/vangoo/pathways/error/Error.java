@@ -6,9 +6,9 @@ import me.vangoo.domain.entities.Pathway;
 import me.vangoo.domain.entities.PathwayGroup;
 import me.vangoo.pathways.error.abilities.SuperiorObservation;
 import me.vangoo.pathways.error.abilities.SwindlerCharm;
-import me.vangoo.pathways.justiciar.abilities.PhysicalEnhancement;
+import me.vangoo.pathways.common.abilities.PhysicalEnhancement;
 import me.vangoo.pathways.whitetower.abilities.Agility;
-import me.vangoo.pathways.whitetower.abilities.CombatProficiency;
+import me.vangoo.pathways.common.abilities.CombatProficiency;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;

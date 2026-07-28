@@ -307,3 +307,29 @@ MA_Sun_S5:
   Template: MA_Base
   Skills:
   - effect:particles{p=end_rod;amount=6;hS=0.3;vS=0.5;y=1;speed=0.01} @self ~onTimer:20
+
+# ── Tyrant (MELEE, морські; скіли ще не зроблені — лише буруни води) ──
+MA_Tyrant_S9:
+  Template: MA_Base
+  Skills:
+  - effect:particles{p=bubble;amount=4;hS=0.3;vS=0.5;y=1;speed=0.01} @self ~onTimer:20
+
+MA_Tyrant_S8:
+  Template: MA_Base
+  Skills:
+  - effect:particles{p=bubble;amount=5;hS=0.3;vS=0.5;y=1;speed=0.01} @self ~onTimer:20
+
+MA_Tyrant_S7:
+  Template: MA_Base
+  Skills:
+  - effect:particles{p=bubble;amount=5;hS=0.4;vS=0.5;y=1;speed=0.01} @self ~onTimer:20
+
+MA_Tyrant_S6:
+  Template: MA_Base
+  Skills:
+  - effect:particles{p=bubble;amount=6;hS=0.4;vS=0.6;y=1;speed=0.01} @self ~onTimer:20
+
+MA_Tyrant_S5:
+  Template: MA_Base
+  Skills:
+  - effect:particles{p=bubble;amount=6;hS=0.5;vS=0.6;y=1;speed=0.01} @self ~onTimer:20

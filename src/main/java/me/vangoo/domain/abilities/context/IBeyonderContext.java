@@ -27,4 +27,7 @@ public interface IBeyonderContext {
     void setOverride(UUID playerId, Beyonder override);
 
     void removeOverride(UUID playerId);
+
+    /** Персистить поточний стан beyonder'а (напр. після прямої мутації в deferred-потоці). */
+    void updateBeyonder(UUID playerId);
 }

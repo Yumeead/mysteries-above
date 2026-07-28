@@ -2,9 +2,10 @@ package me.vangoo.pathways.justiciar;
 
 import me.vangoo.domain.entities.Pathway;
 import me.vangoo.domain.entities.PathwayGroup;
+import me.vangoo.pathways.common.abilities.PhysicalEnhancement;
 import me.vangoo.pathways.door.abilities.AntiDivination;
 import me.vangoo.pathways.justiciar.abilities.*;
-import me.vangoo.pathways.whitetower.abilities.CombatProficiency;
+import me.vangoo.pathways.common.abilities.CombatProficiency;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;

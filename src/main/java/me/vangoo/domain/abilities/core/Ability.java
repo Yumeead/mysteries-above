@@ -29,6 +29,14 @@ public abstract class Ability {
     }
 
     /**
+     * Periodic cost for a concrete sequence — override when the upkeep scales with power.
+     * Defaults to the flat {@link #getPeriodicCost()}.
+     */
+    public int getPeriodicCost(Sequence userSequence) {
+        return getPeriodicCost();
+    }
+
+    /**
      * Cooldown in seconds
      */
     public abstract int getCooldown(Sequence userSequence);

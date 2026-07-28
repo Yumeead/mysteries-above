@@ -48,7 +48,7 @@ public class AbilityItemFactory {
 
                 // Display cost based on ability type
                 int immediateCost = ability.getSpiritualityCost();
-                int periodicCost = ability.getPeriodicCost();
+                int periodicCost = ability.getPeriodicCost(userSequence);
 
                 if (periodicCost > 0) {
                     // Channeled/toggle ability with periodic cost
