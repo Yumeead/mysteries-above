@@ -32,6 +32,11 @@ forage:
       - ALLIUM
       - RED_TULIP
       - LILY_OF_THE_VALLEY
+      - SEAGRASS                # підводна «флора»: морські інгредієнти Tyrant
+      - TALL_SEAGRASS
+  # ponytail: підводні ноди беруть той самий донор, якому пісок/гравій — невалідна опора;
+  # рідкісний блок-апдейт поруч може збити ноду (живе вона й так лише TTL). Якщо заважатиме —
+  # окремий waterlogged-донор + текстура в ресурспаку.
   donors:                     # оригінал -> блок-донор; ресурспак малює донора «зачарованим»
     default-plant: WARPED_ROOTS
     default-leaves: AZALEA_LEAVES
@@ -137,3 +142,33 @@ forage:
       - { id: meteorite_crystal, weight: 20 }
       - { id: ashes_of_a_forbidden_decree, weight: 15 }
       - { id: ashes_of_a_public_execution, weight: 12 }
+    # Океанські біоми — ноди в морській траві на дні (Tyrant: те, що осідає на дно).
+    OCEAN:
+      - { id: murloc_scales, weight: 50 }
+      - { id: war_cry_bird_beak_segment, weight: 25 }
+      - { id: black_scaled_shark_fin, weight: 15 }
+    WARM_OCEAN:
+      - { id: murloc_scales, weight: 40 }
+      - { id: crystal_jellyfish_tentacles, weight: 15 }
+      - { id: sea_condor_feathers, weight: 25 }
+    LUKEWARM_OCEAN:
+      - { id: murloc_scales, weight: 45 }
+      - { id: sea_condor_feathers, weight: 25 }
+      - { id: war_cry_bird_beak_segment, weight: 20 }
+    COLD_OCEAN:
+      - { id: murloc_scales, weight: 40 }
+      - { id: black_scaled_shark_fin, weight: 20 }
+      - { id: siren_hair_strands, weight: 12 }
+    DEEP_OCEAN:
+      - { id: black_scaled_shark_fin, weight: 25 }
+      - { id: sea_condor_feathers, weight: 20 }
+      - { id: siren_hair_strands, weight: 15 }
+      - { id: crystal_jellyfish_tentacles, weight: 15 }
+    DEEP_LUKEWARM_OCEAN:
+      - { id: crystal_jellyfish_tentacles, weight: 20 }
+      - { id: siren_hair_strands, weight: 15 }
+      - { id: war_cry_bird_beak_segment, weight: 20 }
+    DEEP_COLD_OCEAN:
+      - { id: black_scaled_shark_fin, weight: 25 }
+      - { id: siren_hair_strands, weight: 15 }
+      - { id: crystal_jellyfish_tentacles, weight: 12 }
