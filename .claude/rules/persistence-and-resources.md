@@ -16,6 +16,7 @@ paths:
 ## Інші сховища
 
 - `recipe_unlocks.json` — `JSONRecipeUnlockRepository` + `RecipeUnlockService`.
+- `waypoints.json` — `WaypointStore` (морські мітки Морської Пам'яті, Tyrant; до 10 на гравця, пише після кожної мутації). Здібності дістаються сховища через `context.waypoints()` (`IWaypointContext`).
 - Маріонетки (Fool) — NPC зберігає **Citizens** у своєму `saves.yml` через `MarionetteMinionTrait`; регідрація на старті — `MarionetteRestorer` (+ фолбек-скан через 40 тіків в `onEnable`). Не знищуй NPC в `onDisable`.
 
 ## Ресурси (`src/main/resources`)

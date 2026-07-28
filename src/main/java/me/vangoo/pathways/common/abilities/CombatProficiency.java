@@ -1,4 +1,4 @@
-package me.vangoo.pathways.whitetower.abilities;
+package me.vangoo.pathways.common.abilities;
 
 import me.vangoo.domain.abilities.core.IAbilityContext;
 import me.vangoo.domain.abilities.core.PermanentPassiveAbility;

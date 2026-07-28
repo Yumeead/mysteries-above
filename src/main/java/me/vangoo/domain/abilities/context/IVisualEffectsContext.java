@@ -252,4 +252,47 @@ public interface IVisualEffectsContext {
      * @param location точка удару
      */
     void playHolyLightning(Location location);
+
+    /**
+     * Удар блискавки в точку заданого кольору: візуальний розряд (без вогню й шкоди),
+     * спалах, висхідний стовп іскор і хмара пилу кольору шляху + грім.
+     * {@link #playHolyLightning} — золотий пресет цього ефекту з церемоніальним звуком.
+     *
+     * @param location точка удару
+     * @param color    колір розряду (з PathwayBranding)
+     */
+    void playLightningBolt(Location location, Color color);
+
+    /**
+     * Стіна води, що НАПРЯМЛЕНО котиться вперед від {@code origin} уздовж {@code direction}:
+     * вертикальна завіса з пилу кольору шляху рухається щотіка, поки не подолає {@code length}
+     * блоків за {@code durationTicks}. На відміну від {@link #playWaveEffect} (кільце, що
+     * розходиться на всі боки), це спрямований вал — для хвиль/цунамі, що б'ють уперед.
+     * Самодостатній (володіє власним таском); лише малює — шкоду/відкид рахує здібність.
+     *
+     * @param origin        звідки стартує вал (зазвичай ноги кастера)
+     * @param direction     напрям руху валу (горизонтальний)
+     * @param length        скільки блоків вал проходить уперед
+     * @param width         ширина завіси (упоперек напряму)
+     * @param color         колір води (з PathwayBranding)
+     * @param durationTicks за скільки тіків вал долає всю довжину
+     */
+    void playSurgingWave(Location origin, org.bukkit.util.Vector direction,
+                         double length, double width, Color color, int durationTicks);
+
+    /**
+     * СТОЯЧА вертикальна завіса на місці: площина з пилу кольору шляху, перпендикулярна
+     * {@code facing}, що брижить (хвиля біжить упоперек) і тримається {@code durationTicks}.
+     * На відміну від {@link #playSurgingWave} (вал, що котиться вперед) — не рухається:
+     * для щитів, стін і бар'єрів. Самодостатня (володіє власним таском); лише малює.
+     *
+     * @param center        центр завіси (низ; висота росте вгору)
+     * @param facing        напрям, КУДИ дивиться завіса (площина перпендикулярна йому)
+     * @param width         ширина завіси
+     * @param height        висота завіси
+     * @param color         колір (з PathwayBranding)
+     * @param durationTicks скільки завіса стоїть
+     */
+    void playStandingCurtain(Location center, org.bukkit.util.Vector facing,
+                             double width, double height, Color color, int durationTicks);
 }

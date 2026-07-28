@@ -22,4 +22,11 @@ public interface IUIContext {
      * @param callback      викликається з true, якщо гравець присів, і false, якщо час вийшов
      */
     void monitorSneaking(UUID targetId, int durationTicks, Consumer<Boolean> callback);
+
+    /**
+     * Чекає наступного повідомлення гравця в чат (для введення/перейменування). Повідомлення
+     * не потрапляє в загальний чат. Колбек викликається в головному потоці; якщо гравець нічого
+     * не пише ~30 с, підписка тихо знімається без виклику колбека.
+     */
+    void promptChatInput(UUID targetId, Consumer<String> callback);
 }

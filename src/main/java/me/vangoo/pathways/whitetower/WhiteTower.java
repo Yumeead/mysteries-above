@@ -2,8 +2,9 @@ package me.vangoo.pathways.whitetower;
 
 import me.vangoo.domain.entities.Pathway;
 import me.vangoo.domain.entities.PathwayGroup;
+import me.vangoo.pathways.common.abilities.CombatProficiency;
+import me.vangoo.pathways.common.abilities.PhysicalEnhancement;
 import me.vangoo.pathways.common.abilities.RitualMagic;
-import me.vangoo.pathways.justiciar.abilities.PhysicalEnhancement;
 import me.vangoo.pathways.whitetower.abilities.*;
 import org.bukkit.potion.PotionEffectType;
 

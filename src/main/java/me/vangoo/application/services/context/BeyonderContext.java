@@ -109,4 +109,12 @@ public class BeyonderContext implements IBeyonderContext {
     public void removeOverride(UUID playerId) {
         beyonderService.removeOverride(playerId);
     }
+
+    @Override
+    public void updateBeyonder(UUID playerId) {
+        Beyonder beyonder = beyonderService.getBeyonder(playerId);
+        if (beyonder != null) {
+            beyonderService.updateBeyonder(beyonder);
+        }
+    }
 }

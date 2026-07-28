@@ -33,6 +33,7 @@ public class BukkitAbilityContext implements IAbilityContext {
     private final PotionManager potionManager;
     private final ContractService contractService;
     private final AmplificationManager amplificationManager;
+    private final me.vangoo.infrastructure.waypoints.WaypointStore waypointStore;
 
     private IVisualEffectsContext visualEffectsContext;
     private ISchedulingContext schedulingContext;
@@ -48,6 +49,7 @@ public class BukkitAbilityContext implements IAbilityContext {
     private IMessagingContext messagingContext;
     private IContractContext contractContext;
     private IAmplificationContext amplificationContext;
+    private IWaypointContext waypointContext;
 
     public BukkitAbilityContext(
             Player caster,
@@ -57,7 +59,7 @@ public class BukkitAbilityContext implements IAbilityContext {
             AbilityLockManager lockManager, GlowingEntities glowingEntities, EffectManager effectManager,
             RampageManager rampageManager, TemporaryEventManager temporaryEventManager, PassiveAbilityManager passiveAbilityManager, DomainEventPublisher eventPublisher,
             RecipeUnlockService recipeUnlockService, PotionManager potionManager, ContractService contractService,
-            AmplificationManager amplificationManager) {
+            AmplificationManager amplificationManager, me.vangoo.infrastructure.waypoints.WaypointStore waypointStore) {
         this.caster = caster;
         this.plugin = plugin;
         this.cooldownManager = cooldownManager;
@@ -74,6 +76,7 @@ public class BukkitAbilityContext implements IAbilityContext {
         this.potionManager = potionManager;
         this.contractService = contractService;
         this.amplificationManager = amplificationManager;
+        this.waypointStore = waypointStore;
     }
 
     // ==========================================
@@ -215,5 +218,13 @@ public class BukkitAbilityContext implements IAbilityContext {
             amplificationContext = new AmplificationContext(amplificationManager);
         }
         return amplificationContext;
+    }
+
+    @Override
+    public IWaypointContext waypoints() {
+        if (waypointContext == null) {
+            waypointContext = new WaypointContext(waypointStore);
+        }
+        return waypointContext;
     }
 }

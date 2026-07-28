@@ -5,7 +5,7 @@ import me.vangoo.domain.entities.Pathway;
 import me.vangoo.domain.entities.PathwayGroup;
 import me.vangoo.pathways.common.abilities.RitualMagic;
 import me.vangoo.pathways.door.abilities.Record;
-import me.vangoo.pathways.justiciar.abilities.PhysicalEnhancement;
+import me.vangoo.pathways.common.abilities.PhysicalEnhancement;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;

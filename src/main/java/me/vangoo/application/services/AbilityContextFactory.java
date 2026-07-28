@@ -24,6 +24,7 @@ public class AbilityContextFactory {
     private final PotionManager potionManager;
     private final ContractService contractService;
     private final AmplificationManager amplificationManager;
+    private final me.vangoo.infrastructure.waypoints.WaypointStore waypointStore;
 
 
     public AbilityContextFactory(
@@ -40,7 +41,8 @@ public class AbilityContextFactory {
             RecipeUnlockService recipeUnlockService,
             PotionManager potionManager,
             ContractService contractService,
-            AmplificationManager amplificationManager
+            AmplificationManager amplificationManager,
+            me.vangoo.infrastructure.waypoints.WaypointStore waypointStore
     ) {
         this.plugin = Objects.requireNonNull(plugin, "Plugin cannot be null");
         this.cooldownManager = Objects.requireNonNull(cooldownManager, "CooldownManager cannot be null");
@@ -56,6 +58,7 @@ public class AbilityContextFactory {
         this.potionManager = potionManager;
         this.contractService = Objects.requireNonNull(contractService, "ContractService cannot be null");
         this.amplificationManager = Objects.requireNonNull(amplificationManager, "AmplificationManager cannot be null");
+        this.waypointStore = Objects.requireNonNull(waypointStore, "WaypointStore cannot be null");
     }
 
 
@@ -75,7 +78,8 @@ public class AbilityContextFactory {
                 recipeUnlockService,
                 potionManager,
                 contractService,
-                amplificationManager
+                amplificationManager,
+                waypointStore
         );
     }
 }

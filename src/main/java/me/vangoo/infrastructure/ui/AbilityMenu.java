@@ -56,6 +56,12 @@ public class AbilityMenu {
     // Зберігаємо поточний фільтр для кожного гравця
     private final Map<UUID, AbilityFilter> playerFilters = new HashMap<>();
 
+    // Сторінка списку здібностей (0-based) — здібностей уже більше, ніж вміщає одна сітка
+    private final Map<UUID, Integer> playerPages = new HashMap<>();
+
+    /** Місткість сітки здібностей: рядки 2-5 × стовпці 2-8. */
+    private static final int PAGE_SIZE = 4 * 7;
+
     public enum AbilityFilter {
         ALL(Material.NETHER_STAR),
         ACTIVE(Material.DIAMOND_SWORD),
@@ -195,6 +201,8 @@ public class AbilityMenu {
         boolean possessing = mc != null && mc.isPossessing(player.getUniqueId());
         boolean tabOpen = possessing && marionetteTabOpen.getOrDefault(player.getUniqueId(), false);
 
+        int pages = 1;
+        int page = 0;
         if (tabOpen) {
             // ВКЛАДКА МАРІОНЕТКИ: здібності ОСНОВНОГО ТІЛА (творця), що витрачають його духовність
             renderMarionetteTabAbilities(gui, player, beyonder, mc, currentFilter);
@@ -203,14 +211,21 @@ public class AbilityMenu {
             List<Ability> allAbilities = new ArrayList<>(beyonder.getAbilities());
             List<Ability> filteredAbilities = filterAbilities(allAbilities, currentFilter);
 
+            pages = Math.max(1, (filteredAbilities.size() + PAGE_SIZE - 1) / PAGE_SIZE);
+            page = Math.min(playerPages.getOrDefault(player.getUniqueId(), 0), pages - 1);
+            playerPages.put(player.getUniqueId(), page);
+            List<Ability> pageAbilities = filteredAbilities.subList(
+                    page * PAGE_SIZE, Math.min(filteredAbilities.size(), (page + 1) * PAGE_SIZE));
+
             int slot = 0;
-            for (int row = 2; row <= 5 && slot < filteredAbilities.size(); row++) {
-                for (int col = 2; col <= 8 && slot < filteredAbilities.size(); col++) {
-                    Ability ability = filteredAbilities.get(slot);
+            for (int row = 2; row <= 5 && slot < pageAbilities.size(); row++) {
+                for (int col = 2; col <= 8 && slot < pageAbilities.size(); col++) {
+                    Ability ability = pageAbilities.get(slot);
                     gui.setItem(row, col, createAbilityGuiItem(ability, beyonder, player));
                     slot++;
                 }
             }
+
         }
 
         // Декоративні рамки
@@ -225,6 +240,12 @@ public class AbilityMenu {
         // Кнопка фільтру — лише у звичайному вигляді
         if (!tabOpen) {
             addFilterButton(gui, player, beyonder, currentFilter);
+        }
+
+        // Гортання сторінок — коли здібностей більше, ніж вміщає сітка (після рамок, бо ті
+        // перемальовують увесь ряд 6)
+        if (pages > 1) {
+            addPageButtons(gui, player, beyonder, currentFilter, page, pages);
         }
 
         // Вкладка ордену — лише члену й лише у власному тілі (слот 6,5 віддано маріонетці)
@@ -481,6 +502,7 @@ public class AbilityMenu {
             // Перемикаємо фільтр
             AbilityFilter newFilter = currentFilter.next();
             playerFilters.put(player.getUniqueId(), newFilter);
+            playerPages.put(player.getUniqueId(), 0);
 
             // Звук
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
@@ -490,6 +512,39 @@ public class AbilityMenu {
         });
 
         gui.setItem(6, 3, guiItem);
+    }
+
+    /**
+     * Кнопки гортання сторінок (row 6, col 2 — назад; row 6, col 8 — вперед). Показуються
+     * лише коли здібностей більше за {@link #PAGE_SIZE}; без них зайві здібності просто
+     * не малювались би.
+     */
+    private void addPageButtons(Gui gui, Player player, Beyonder beyonder,
+                                AbilityFilter currentFilter, int page, int pages) {
+        if (page > 0) {
+            gui.setItem(6, 2, pageButton(gui, player, beyonder, currentFilter,
+                    "◀ Попередня сторінка", page, pages, page - 1));
+        }
+        if (page < pages - 1) {
+            gui.setItem(6, 8, pageButton(gui, player, beyonder, currentFilter,
+                    "Наступна сторінка ▶", page, pages, page + 1));
+        }
+    }
+
+    private GuiItem pageButton(Gui gui, Player player, Beyonder beyonder, AbilityFilter currentFilter,
+                               String title, int page, int pages, int targetPage) {
+        ItemStack btn = new ItemStack(Material.ARROW);
+        ItemMeta meta = btn.getItemMeta();
+        meta.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + title);
+        meta.setLore(List.of(ChatColor.GRAY + "Сторінка " + (page + 1) + "/" + pages));
+        btn.setItemMeta(meta);
+
+        return new GuiItem(btn, event -> {
+            event.setCancelled(true);
+            playerPages.put(player.getUniqueId(), targetPage);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
+            refreshGui(gui, player, beyonder, currentFilter);
+        });
     }
 
     /**

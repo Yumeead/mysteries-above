@@ -107,6 +107,7 @@ public class ServiceContainer {
     private me.vangoo.infrastructure.contracts.JSONContractRepository contractRepository;
     private me.vangoo.application.services.DivinePunishment divinePunishment;
     private me.vangoo.application.services.ContractService contractService;
+    private me.vangoo.infrastructure.waypoints.WaypointStore waypointStore;
 
     // Schedulers
     private PassiveAbilityScheduler passiveAbilityScheduler;
@@ -259,6 +260,10 @@ public class ServiceContainer {
         // --- Sun: контракти ---
         this.contractRepository = new me.vangoo.infrastructure.contracts.JSONContractRepository(
                 plugin.getDataFolder() + File.separator + "contracts.json");
+
+        // --- Tyrant: морські мітки (Морська Пам'ять) ---
+        this.waypointStore = new me.vangoo.infrastructure.waypoints.WaypointStore(
+                plugin.getDataFolder() + File.separator + "waypoints.json");
     }
 
     private void initializeApplicationServices(fr.skytasul.glowingentities.GlowingEntities glowingEntities,
@@ -305,7 +310,8 @@ public class ServiceContainer {
                 recipeUnlockService,
                 potionManager,
                 contractService,
-                amplificationManager
+                amplificationManager,
+                waypointStore
         );
 
         this.abilityExecutor = new AbilityExecutor(
