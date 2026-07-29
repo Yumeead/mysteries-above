@@ -60,6 +60,7 @@ forage:
       - { id: midsummer_grass, weight: 25 }
       - { id: rosemary, weight: 20 }
       - { id: eye_of_perfect_recognition, weight: 20 }
+      - { id: verbena_powder, weight: 25 }
     SUNFLOWER_PLAINS:
       - { id: elf_flower_petals, weight: 50 }
       - { id: peppermint_extract, weight: 30 }
@@ -74,6 +75,7 @@ forage:
       - { id: rosemary, weight: 20 }
       - { id: condensed_astral_nebula, weight: 12 }
       - { id: pure_spirituality_tear, weight: 12 }
+      - { id: verbena_powder, weight: 20 }
     FOREST:
       - { id: red_chestnut_flower, weight: 40 }
       - { id: memory_flower_petals, weight: 40 }
@@ -81,6 +83,7 @@ forage:
       - { id: aconite_juice, weight: 20 }
       - { id: illusory_chime_tree_fruit, weight: 20 }
       - { id: wayfinder_tree_root, weight: 15 }
+      - { id: white_chestnut_balm, weight: 25 }
     FLOWER_FOREST:
       - { id: memory_flower_petals, weight: 50 }
       - { id: peppermint_extract, weight: 30 }
@@ -94,6 +97,7 @@ forage:
       - { id: tree_of_elders_crystalized_roots, weight: 20 }
       - { id: thread_of_supernatural_intuition, weight: 25 }
       - { id: liquid_silver_phantom_residue, weight: 15 }
+      - { id: white_chestnut_balm, weight: 20 }
     DARK_FOREST:
       - { id: memory_flower_petals, weight: 40 }
       - { id: crystalline_moon_orchid, weight: 25 }
@@ -105,6 +109,7 @@ forage:
       - { id: chains_of_collective_fear, weight: 15 }
       - { id: shackles_of_the_guilty, weight: 12 }
       - { id: devastated_blank_mask, weight: 15 }
+      - { id: larch_essential_oil, weight: 15 }
     JUNGLE:
       - { id: ever_shifting_lotus, weight: 40 }
       - { id: tree_of_elders_fruit, weight: 30 }
@@ -120,6 +125,7 @@ forage:
       - { id: tree_of_elders_crystalized_roots, weight: 20 }
       - { id: astral_mist_essence, weight: 15 }
       - { id: ancient_rune_powder, weight: 12 }
+      - { id: larch_essential_oil, weight: 25 }
     SWAMP:
       - { id: dust_of_lake_spirit, weight: 50 }
       - { id: string_grass_powder, weight: 25 }

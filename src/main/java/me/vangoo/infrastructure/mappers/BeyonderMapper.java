@@ -5,6 +5,7 @@ import me.vangoo.domain.abilities.core.ActiveAbility;
 import me.vangoo.domain.abilities.core.OneTimeUseAbility;
 import me.vangoo.domain.entities.Beyonder;
 import me.vangoo.domain.entities.Pathway;
+import me.vangoo.pathways.common.abilities.RitualMagic;
 import me.vangoo.pathways.whitetower.abilities.custom.GeneratedSpell;
 import me.vangoo.domain.spells.SpellCodec;
 import me.vangoo.domain.valueobjects.AbilityIdentity;
@@ -40,6 +41,10 @@ public class BeyonderMapper {
      */
     public BeyonderDTO toDTO(Beyonder beyonder) {
         List<String> offPathwayAbilityIds = beyonder.getOffPathwayActiveAbilities().stream()
+                // Ритуальна магія приходить лише з Личини (Error, Посл. 5) і живе рівно стільки,
+                // скільки сама личина, — а та в пам'яті ChurchService і рестарт не переживає.
+                // Персистувати її = лишити злодію магію назавжди, якщо сервер ляже в ті 10 хв.
+                .filter(a -> !(a instanceof RitualMagic))
                 .map(a -> a.getIdentity().id())
                 .toList();
         return new BeyonderDTO(

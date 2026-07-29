@@ -429,7 +429,23 @@ public class Beyonder {
     }
 
     public void increaseSanityLoss(int amount) {
-        sanityLoss = sanityLoss.increase(amount);
+        sanityLoss = sanityLoss.increase(resistSanityLoss(amount));
+    }
+
+    /**
+     * Пасивки-опору ({@link Ability#getSanityLossMultiplier()}) послаблюють ВСЯКУ вхідну
+     * втрату глузду — і від чужих здібностей, і від власного перенапруження. Береться
+     * найсильніший опір, а не добуток, щоб кілька пасивок не давали імунітет.
+     */
+    private int resistSanityLoss(int amount) {
+        if (amount <= 0) {
+            return amount;
+        }
+        double multiplier = 1.0;
+        for (Ability ability : getAbilities()) {
+            multiplier = Math.min(multiplier, ability.getSanityLossMultiplier());
+        }
+        return multiplier >= 1.0 ? amount : Math.max(1, (int) Math.round(amount * multiplier));
     }
 
     public void decreaseSanityLoss(int amount) {

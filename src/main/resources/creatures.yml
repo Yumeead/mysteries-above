@@ -8,7 +8,59 @@
 creatures:
 
   # ============================ ERROR ============================
-  error_sphinx_9:
+  # Виняток із правила «лут = лише main»: у Помилки допоміжні — це теж частини тіла істоти
+  # (кров Сфінкса, слиз колонії, порошок Примари), тож вони падають із того ж моба.
+  # Рослинні допоміжні (вербена, каштановий бальзам, олія модрини) — у forage.yml.
+  error_black_mosquito_9:
+    base_entity: BEE
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: blood_speckled_black_mosquito, weight: 50, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [SWAMP, MANGROVE_SWAMP], replace: [BEE, SPIDER], chance: 0.005 }
+      structure: { keys: [], chance: 0.0 }
+
+  error_candle_devourer_9:
+    base_entity: SILVERFISH
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: candle_devourer_core, weight: 50, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [DARK_FOREST, DRIPSTONE_CAVES], replace: [SILVERFISH, ZOMBIE], chance: 0.005 }
+      structure: { keys: [], chance: 0.0 }
+
+  error_pitcher_plant_8:
+    base_entity: HUSK
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: human_faced_pitcher_plant, weight: 50, min: 1, max: 1 }
+        - { id: anothers_tears, weight: 35, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [JUNGLE, SPARSE_JUNGLE], replace: [ZOMBIE, HUSK], chance: 0.00375 }
+      structure: { keys: [], chance: 0.0 }
+
+  error_insect_colony_8:
+    base_entity: SILVERFISH
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: soul_bewitching_insect_larvae, weight: 50, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [SWAMP, MANGROVE_SWAMP], replace: [SILVERFISH, SPIDER], chance: 0.00375 }
+      structure: { keys: [], chance: 0.0 }
+
+  error_sphinx_7:
     base_entity: ENDERMAN
     tier: common
     loot:
@@ -16,33 +68,74 @@ creatures:
       max_items: 1
       items:
         - { id: sphinx_brain, weight: 50, min: 1, max: 1 }
+        - { id: sphinx_blood, weight: 35, min: 1, max: 1 }
     spawn:
-      natural: { biomes: [DESERT, BADLANDS], replace: [HUSK, ZOMBIE], chance: 0.005 }
+      natural: { biomes: [DESERT, BADLANDS], replace: [HUSK, ZOMBIE], chance: 0.0025 }
       structure: { keys: [], chance: 0.0 }
 
-  error_sphinx_8:
-    base_entity: ENDERMAN
+  error_insect_colony_7:
+    base_entity: BEE
     tier: common
     loot:
       min_items: 0
       max_items: 1
       items:
-        - { id: sphinx_brain, weight: 50, min: 1, max: 1 }
+        - { id: soul_bewitching_adult_insect, weight: 50, min: 1, max: 1 }
+        - { id: soul_bewitching_colony_mucus, weight: 35, min: 1, max: 1 }
     spawn:
-      natural: { biomes: [DESERT], replace: [HUSK], chance: 0.00375 }
+      natural: { biomes: [SWAMP, JUNGLE], replace: [BEE, SPIDER], chance: 0.0025 }
       structure: { keys: [], chance: 0.0 }
 
-  error_plague_serpent_7:
-    base_entity: CAVE_SPIDER
+  error_crystal_threadworm_6:
+    base_entity: ENDERMITE
     tier: common
     loot:
       min_items: 0
       max_items: 1
       items:
-        - { id: plague_serpent_bile, weight: 50, min: 1, max: 1 }
+        - { id: crystal_threadworm, weight: 50, min: 1, max: 1 }
     spawn:
-      natural: { biomes: [SWAMP, MANGROVE_SWAMP], replace: [SPIDER, SLIME], chance: 0.0025 }
+      natural: { biomes: [DRIPSTONE_CAVES, LUSH_CAVES], replace: [SILVERFISH, SPIDER], chance: 0.0015 }
       structure: { keys: [], chance: 0.0 }
+
+  error_cloaked_specter_6:
+    base_entity: VEX
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: cloaked_specter_attachment, weight: 50, min: 1, max: 1 }
+        - { id: cloaked_specter_residual_powder, weight: 35, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [DARK_FOREST], replace: [VEX, ZOMBIE], chance: 0.0015 }
+      structure: { keys: [], chance: 0.0 }
+
+  error_dream_eating_rat_5:
+    base_entity: RAVAGER
+    tier: apex
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: dream_eating_rat_heart, weight: 50, min: 1, max: 1 }
+        - { id: dream_eating_rat_blood, weight: 35, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [DARK_FOREST], replace: [], chance: 0.00075 }
+      structure: { keys: [mysteries, nova_structures], chance: 0.12 }
+
+  error_depraved_breath_5:
+    base_entity: PHANTOM
+    tier: apex
+    loot:
+      min_items: 0
+      max_items: 1
+      items:
+        - { id: spirit_of_depraved_breath, weight: 50, min: 1, max: 1 }
+        - { id: despiritualized_depraved_breath, weight: 35, min: 1, max: 1 }
+    spawn:
+      natural: { biomes: [SWAMP], replace: [], chance: 0.00075 }
+      structure: { keys: [mysteries, nova_structures], chance: 0.12 }
 
   # ========================== VISIONARY ==========================
   visionary_manhal_9:

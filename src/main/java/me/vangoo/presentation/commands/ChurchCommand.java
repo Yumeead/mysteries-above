@@ -97,7 +97,11 @@ public class ChurchCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(PREFIX + ChatColor.RED + "Ця команда доступна лише гравцям.");
             return;
         }
-        Optional<Institution> churchOpt = churchService.churchOf(player.getUniqueId());
+        // Реальне членство, не churchOf: під личиною членства насправді немає, і leave()
+        // мовчки повернув би false.
+        Optional<Institution> churchOpt = churchService.isMember(player.getUniqueId())
+                ? churchService.churchOf(player.getUniqueId())
+                : Optional.empty();
         if (churchOpt.isEmpty()) {
             player.sendMessage(PREFIX + ChatColor.RED + "Ви не член церкви.");
             return;

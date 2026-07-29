@@ -140,6 +140,13 @@ public class ChurchService {
     private final Map<UUID, Set<String>> abandonedChurches = new HashMap<>();
     private final Map<String, ChurchVault> vaults = new HashMap<>();
     private final Set<UUID> notifiedReadyOrders = new HashSet<>();
+    /**
+     * Личини (Помилка, Посл. 5): гравець → церква + абсолютний строк. Навмисно НЕ
+     * персиститься — личина на 10 хв мусить згасати разом із рестартом.
+     */
+    private final Map<UUID, Disguise> disguises = new HashMap<>();
+
+    private record Disguise(String institutionId, long expiresAt) {}
 
     public ChurchService(Plugin plugin, ChurchConfig config, InstitutionRegistry registry,
                          BeyonderService beyonderService, PathwayManager pathwayManager,
@@ -354,18 +361,57 @@ public class ChurchService {
         }
     }
 
+    /** Реальне членство, БЕЗ личини — для мутаторів і для чесних відмов у presentation. */
+    public boolean isMember(UUID playerId) {
+        return memberships.containsKey(playerId);
+    }
+
     /** Чи зрікся гравець цієї церкви (вступ у неї закритий назавжди). */
     public boolean hasAbandoned(UUID playerId, String institutionId) {
         return abandonedChurches.getOrDefault(playerId, Set.of()).contains(institutionId);
     }
 
+    /**
+     * Єдина точка правди про членство — сюди ж вмикається личина Крадія снів. Синтетичне
+     * членство ніде не зберігається (persist() ходить по {@link #memberships}), тож усе,
+     * що самозванець «наробить», зникає разом із личиною.
+     */
     public Optional<Membership> membershipOf(UUID playerId) {
-        return Optional.ofNullable(memberships.get(playerId));
+        Membership real = memberships.get(playerId);
+        if (real != null) {
+            return Optional.of(real);
+        }
+        return Optional.ofNullable(activeDisguise(playerId))
+                .map(institutionId -> new Membership(playerId, institutionId));
     }
 
     public Optional<Institution> churchOf(UUID playerId) {
-        Membership membership = memberships.get(playerId);
-        return membership == null ? Optional.empty() : registry.byId(membership.institutionId());
+        return membershipOf(playerId).flatMap(m -> registry.byId(m.institutionId()));
+    }
+
+    // ── Личина (Помилка, Посл. 5) ────────────────────────────────────────────
+
+    /** Церква на {@code durationMillis} вважає гравця своїм; попередня личина заміщається. */
+    public void disguiseAs(UUID playerId, String institutionId, long durationMillis) {
+        disguises.put(playerId, new Disguise(institutionId,
+                System.currentTimeMillis() + durationMillis));
+    }
+
+    public void dropDisguise(UUID playerId) {
+        disguises.remove(playerId);
+    }
+
+    /** Id церкви під личиною, або null. Строк абсолютний — протермінований запис гине тут. */
+    private String activeDisguise(UUID playerId) {
+        Disguise disguise = disguises.get(playerId);
+        if (disguise == null) {
+            return null;
+        }
+        if (System.currentTimeMillis() >= disguise.expiresAt()) {
+            disguises.remove(playerId);
+            return null;
+        }
+        return disguise.institutionId();
     }
 
     /** null = гравець без шляху (пасивний Beyonder-профіль ще не існує або без Pathway). */

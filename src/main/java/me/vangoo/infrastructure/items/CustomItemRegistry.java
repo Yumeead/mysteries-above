@@ -75,7 +75,7 @@ public class CustomItemRegistry {
      * Get custom item from ItemStack
      */
     public Optional<CustomItem> getCustomItem(ItemStack itemStack) {
-        return itemFactory.getCustomItemId(itemStack)
+        return CustomItemFactory.getCustomItemId(itemStack)
                 .flatMap(this::getItem);
     }
 
@@ -83,7 +83,7 @@ public class CustomItemRegistry {
      * Check if ItemStack is a custom item
      */
     public boolean isCustomItem(ItemStack itemStack) {
-        return itemFactory.isCustomItem(itemStack);
+        return CustomItemFactory.isCustomItem(itemStack);
     }
 
     /**

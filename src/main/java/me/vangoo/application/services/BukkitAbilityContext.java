@@ -32,8 +32,13 @@ public class BukkitAbilityContext implements IAbilityContext {
     private final RecipeUnlockService recipeUnlockService;
     private final PotionManager potionManager;
     private final ContractService contractService;
+    private final ChurchService churchService;
     private final AmplificationManager amplificationManager;
     private final me.vangoo.infrastructure.waypoints.WaypointStore waypointStore;
+    private final me.vangoo.infrastructure.theft.TheftLedger theftLedger;
+    private final PathwayManager pathwayManager;
+    private final me.vangoo.infrastructure.mythic.MythicCreatureGateway mythicCreatureGateway;
+    private final java.util.Map<String, me.vangoo.domain.creatures.CreatureDefinition> creatureRegistry;
 
     private IVisualEffectsContext visualEffectsContext;
     private ISchedulingContext schedulingContext;
@@ -48,6 +53,7 @@ public class BukkitAbilityContext implements IAbilityContext {
     private IGlowingContext glowingContext;
     private IMessagingContext messagingContext;
     private IContractContext contractContext;
+    private IChurchContext churchContext;
     private IAmplificationContext amplificationContext;
     private IWaypointContext waypointContext;
 
@@ -59,7 +65,11 @@ public class BukkitAbilityContext implements IAbilityContext {
             AbilityLockManager lockManager, GlowingEntities glowingEntities, EffectManager effectManager,
             RampageManager rampageManager, TemporaryEventManager temporaryEventManager, PassiveAbilityManager passiveAbilityManager, DomainEventPublisher eventPublisher,
             RecipeUnlockService recipeUnlockService, PotionManager potionManager, ContractService contractService,
-            AmplificationManager amplificationManager, me.vangoo.infrastructure.waypoints.WaypointStore waypointStore) {
+            ChurchService churchService,
+            AmplificationManager amplificationManager, me.vangoo.infrastructure.waypoints.WaypointStore waypointStore,
+            me.vangoo.infrastructure.theft.TheftLedger theftLedger, PathwayManager pathwayManager,
+            me.vangoo.infrastructure.mythic.MythicCreatureGateway mythicCreatureGateway,
+            java.util.Map<String, me.vangoo.domain.creatures.CreatureDefinition> creatureRegistry) {
         this.caster = caster;
         this.plugin = plugin;
         this.cooldownManager = cooldownManager;
@@ -75,8 +85,13 @@ public class BukkitAbilityContext implements IAbilityContext {
         this.recipeUnlockService = recipeUnlockService;
         this.potionManager = potionManager;
         this.contractService = contractService;
+        this.churchService = churchService;
         this.amplificationManager = amplificationManager;
         this.waypointStore = waypointStore;
+        this.theftLedger = theftLedger;
+        this.pathwayManager = pathwayManager;
+        this.mythicCreatureGateway = mythicCreatureGateway;
+        this.creatureRegistry = creatureRegistry;
     }
 
     // ==========================================
@@ -135,7 +150,8 @@ public class BukkitAbilityContext implements IAbilityContext {
     @Override
     public IBeyonderContext beyonder() {
         if (beyonderContext == null) {
-            beyonderContext = new BeyonderContext(beyonderService, passiveAbilityManager, recipeUnlockService, potionManager);
+            beyonderContext = new BeyonderContext(beyonderService, passiveAbilityManager, recipeUnlockService, potionManager, theftLedger,
+                    pathwayManager, mythicCreatureGateway, creatureRegistry);
         }
         return beyonderContext;
     }
@@ -210,6 +226,14 @@ public class BukkitAbilityContext implements IAbilityContext {
             contractContext = new ContractContext(contractService);
         }
         return contractContext;
+    }
+
+    @Override
+    public IChurchContext church() {
+        if (churchContext == null) {
+            churchContext = new ChurchContext(churchService);
+        }
+        return churchContext;
     }
 
     @Override

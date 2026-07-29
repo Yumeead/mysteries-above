@@ -249,7 +249,8 @@ public class RitualMagic extends ActiveAbility {
                 + ") — відкат вдарив по розуму.");
     }
 
-    private int countLitCandles(Location center) {
+    /** Вівтар — запалені свічки поруч. Публічний, бо ту саму умову має Личина (Помилка, Посл. 5). */
+    public static int countLitCandles(Location center) {
         World world = center.getWorld();
         if (world == null) return 0;
         int count = 0;
