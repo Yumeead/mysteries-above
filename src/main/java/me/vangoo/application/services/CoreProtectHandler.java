@@ -53,7 +53,8 @@ public class CoreProtectHandler {
                             loc,
                             description,
                             RecordedEvent.EventType.CONTAINER_TRANSACTION,
-                            result.getTime() * 1000L
+                            result.getTime() * 1000L,
+                            result.getPlayer()
                     ));
                 }
             }
@@ -82,7 +83,8 @@ public class CoreProtectHandler {
                             loc,
                             description,
                             type,
-                            result.getTime() * 1000L
+                            result.getTime() * 1000L,
+                            result.getPlayer()
                     ));
                 }
             }

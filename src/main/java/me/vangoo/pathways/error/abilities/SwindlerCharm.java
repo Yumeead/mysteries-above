@@ -1,29 +1,42 @@
 package me.vangoo.pathways.error.abilities;
 
-import me.vangoo.domain.abilities.core.AbilityResult;
-import me.vangoo.domain.abilities.core.ActiveAbility;
+import com.destroystokyo.paper.entity.villager.Reputation;
+import com.destroystokyo.paper.entity.villager.ReputationType;
+import me.vangoo.domain.PathwayBranding;
 import me.vangoo.domain.abilities.core.IAbilityContext;
+import me.vangoo.domain.abilities.core.PermanentPassiveAbility;
+import me.vangoo.domain.entities.Beyonder;
 import me.vangoo.domain.valueobjects.Sequence;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import me.vangoo.domain.valueobjects.SwindlerInfluence;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.entity.Villager;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SwindlerCharm extends ActiveAbility {
+/**
+ * Посл. 8: риса «Charm» — сама присутність Афериста обеззброює.
+ *
+ * <p>Пасивка, не активна здібність: вороже створіння з шансом не може взяти
+ * кастера на приціл (залізні големи — ніколи), а селяни торгують дешевше.
+ * Знижка йде через ванільну репутацію селянина (MAJOR_POSITIVE), тож ціни
+ * рахує сам сервер і бачить лише цей гравець.
+ */
+public class SwindlerCharm extends PermanentPassiveAbility {
 
-    private static final double RADIUS = 10.0;
-    private static final int SPIRITUALITY_COST = 40;
-    private static final int COOLDOWN_SECONDS = 20;
+    private static final long FEEDBACK_INTERVAL_MS = 2000;
+
+    // Підписки під ВЛАСНИМ ключем (не casterId) — щоб unsubscribeAll іншої здібності їх не стер.
+    private final Map<UUID, UUID> subscriptions = new ConcurrentHashMap<>();
+    private final Map<UUID, Long> lastFeedback = new ConcurrentHashMap<>();
 
     @Override
     public String getName() {
@@ -32,118 +45,97 @@ public class SwindlerCharm extends ActiveAbility {
 
     @Override
     public String getDescription(Sequence userSequence) {
-        return "Використовує шарм та красномовство, щоб заплутати ворогів. Моби втрачають інтерес, а гравці губляться у своїх діях (плутають предмети в руках).";
+        return "Ваша чарівність обеззброює.\nВороже створіння в радіусі "
+                + (int) SwindlerInfluence.CHARM_AGGRO_RANGE + " блоків з шансом "
+                + percent(SwindlerInfluence.charmAggroCancelChance(userSequence))
+                + "% не може взяти вас на приціл, а залізні големи лишаються байдужими.\n"
+                + "Селяни торгують із вами охочіше — знижка близько "
+                + percent(SwindlerInfluence.charmTradeDiscount(userSequence)) + "%.";
     }
 
     @Override
-    public int getSpiritualityCost() {
-        return SPIRITUALITY_COST;
-    }
-
-    @Override
-    public int getCooldown(Sequence sequence) {
-        return COOLDOWN_SECONDS;
-    }
-
-    @Override
-    protected void preExecution(IAbilityContext context) {
-        // Візуальний ефект "Шарму" (сердечка)
-        context.effects().spawnParticle(Particle.HEART, context.getCasterLocation().add(0, 2, 0), 10, 0.5, 0.5, 0.5);
-        // Звук "Бурмотіння" (імітація красномовства)
-        context.effects().playSoundForPlayer(context.getCasterId(), Sound.ENTITY_VILLAGER_TRADE, 1.0f, 1.0f);
-    }
-
-    @Override
-    protected AbilityResult performExecution(IAbilityContext context) {
+    public void onActivate(IAbilityContext context) {
         UUID casterId = context.getCasterId();
+        UUID subKey = UUID.randomUUID();
+        subscriptions.put(casterId, subKey);
 
-        // Отримуємо всіх живих істот в радіусі
-        List<LivingEntity> targets = context.targeting().getNearbyEntities(RADIUS).stream()
-                .filter(e -> e != null && !e.getUniqueId().equals(casterId))
-                .toList();
+        context.events().subscribeToTemporaryEvent(subKey,
+                EntityTargetLivingEntityEvent.class,
+                e -> e.getTarget() != null && casterId.equals(e.getTarget().getUniqueId()),
+                e -> charmAggro(context, casterId, e),
+                Integer.MAX_VALUE
+        );
 
-        if (targets.isEmpty()) {
-            return AbilityResult.failure("Нікого немає поруч, щоб зачарувати.");
-        }
-
-        // Список мобів, яких ми будемо контролювати 3 секунди
-        List<Mob> charmedMobs = new ArrayList<>();
-
-        for (LivingEntity target : targets) {
-            // Ефект 1: Charm & Eloquence (Загальний дебаф)
-            target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 100, 0)); // 5 секунд
-            target.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 100, 0)); // 7 секунд
-
-            // Ефект 2: Збираємо мобів для тривалого контролю
-            if (target instanceof Mob mob) {
-                charmedMobs.add(mob);
-                mob.setTarget(null); // Скидаємо ціль миттєво
-            }
-
-            // Ефект 3: Thought Misdirection (Для гравців - плутанина в руках)
-            if (target instanceof Player enemyPlayer) {
-                performItemMisdirection(context, enemyPlayer);
-            }
-
-            // Візуалізація
-            context.effects().spawnParticle(Particle.HEART, target.getEyeLocation().add(0, 0.5, 0), 3, 0.3, 0.3, 0.3);
-        }
-
-        // --- НОВА ЛОГІКА: Утримання контролю над мобами (3 секунди) ---
-        if (!charmedMobs.isEmpty()) {
-            final int[] ticks = {0};
-            // Запускаємо завдання, що повторюється кожні 5 тіків (0.25 с)
-            context.scheduling().scheduleRepeating(() -> {
-                // Якщо пройшло більше 60 тіків (3 секунди) - зупиняємо
-                if (ticks[0] >= 60) return;
-
-                for (Mob mob : charmedMobs) {
-                    if (mob.isValid()) {
-                        // Якщо моб знову націлився на Афериста - скидаємо це
-                        if (mob.getTarget() != null && mob.getTarget().getUniqueId().equals(casterId)) {
-                            mob.setTarget(null);
-                        }
-                    }
-                }
-                ticks[0] += 5;
-            }, 0, 5);
-        }
-
-        // Баф для самого Афериста
-        context.entity().applyPotionEffect(casterId,PotionEffectType.SPEED, 60, 1);
-
-        return AbilityResult.success();
+        context.events().subscribeToTemporaryEvent(subKey,
+                PlayerInteractEntityEvent.class,
+                e -> casterId.equals(e.getPlayer().getUniqueId()) && e.getRightClicked() instanceof Villager,
+                e -> charmVillager(context, casterId, (Villager) e.getRightClicked()),
+                Integer.MAX_VALUE
+        );
     }
 
     @Override
-    protected void postExecution(IAbilityContext context) {
-        // Звук успішного обману
-        context.effects().playSound(context.getCasterLocation(), Sound.ENTITY_ILLUSIONER_PREPARE_MIRROR, 1.0f, 1.5f);
+    public void onDeactivate(IAbilityContext context) {
+        UUID casterId = context.getCasterId();
+        UUID subKey = subscriptions.remove(casterId);
+        if (subKey != null) context.events().unsubscribeAll(subKey);
+        lastFeedback.remove(casterId);
     }
 
-    /**
-     * Реалізація "Thought Misdirection" (Перенаправлення думок).
-     * Ми "перенаправляємо" намір гравця використати зброю, підміняючи її на інший предмет.
-     */
-    private void performItemMisdirection(IAbilityContext context, Player enemy) {
-        // Шанс спрацювання (щоб не було занадто імбово, наприклад 80%)
-        if (ThreadLocalRandom.current().nextDouble() > 0.8) return;
+    @Override
+    public void tick(IAbilityContext context) {
+        // Пасивка керується подіями — тікати нічого не треба.
+    }
 
-        int heldSlot = enemy.getInventory().getHeldItemSlot();
-        int randomSlot = ThreadLocalRandom.current().nextInt(0, 9); // Слот хотбару 0-8
+    private void charmAggro(IAbilityContext context, UUID casterId, EntityTargetLivingEntityEvent event) {
+        Beyonder caster = context.getCasterBeyonder();
+        Location casterLoc = context.getCasterLocation();
+        if (caster == null || casterLoc == null) return;
 
-        if (heldSlot == randomSlot) {
-            randomSlot = (randomSlot + 1) % 9; // Гарантуємо, що слот інший
+        Location mobLoc = event.getEntity().getLocation();
+        if (!mobLoc.getWorld().equals(casterLoc.getWorld())) return;
+        double range = SwindlerInfluence.CHARM_AGGRO_RANGE;
+        if (mobLoc.distanceSquared(casterLoc) > range * range) return;
+
+        boolean golem = event.getEntity() instanceof IronGolem;
+        if (!golem && ThreadLocalRandom.current().nextDouble()
+                >= SwindlerInfluence.charmAggroCancelChance(caster.getSequence())) {
+            return;
         }
 
-        // Зміна активного слота (Гравець різко бере в руки інший предмет)
-        enemy.getInventory().setHeldItemSlot(randomSlot);
+        event.setCancelled(true);
+        if (event.getEntity() instanceof Mob mob) mob.setTarget(null);
+        charmFeedback(context, casterId, mobLoc);
+    }
 
-        // Повідомлення жертві
-        context.messaging().sendMessageToActionBar(enemy.getUniqueId(),
-                Component.text("Ваші думки сплутались...", NamedTextColor.DARK_PURPLE));
+    private void charmVillager(IAbilityContext context, UUID casterId, Villager villager) {
+        Beyonder caster = context.getCasterBeyonder();
+        if (caster == null) return;
 
-        // Звук для жертви
-        context.effects().playSoundForPlayer(enemy.getUniqueId(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 2.0f);
+        // Ванільна репутація: сума ваг → знижка. MAJOR_POSITIVE важить 5 і не розходиться
+        // між селянами, тож чарівність лишається особистою справою Афериста.
+        int gossip = (int) Math.round(SwindlerInfluence.charmTradeDiscount(caster.getSequence()) * 100);
+        Reputation reputation = villager.getReputation(casterId);
+        if (reputation.getReputation(ReputationType.MAJOR_POSITIVE) >= gossip) return;
+
+        reputation.setReputation(ReputationType.MAJOR_POSITIVE, gossip);
+        villager.setReputation(casterId, reputation);
+        charmFeedback(context, casterId, villager.getLocation());
+    }
+
+    /** Спільний відгук на спрацювання шарму — з тротлінгом, бо подій багато. */
+    private void charmFeedback(IAbilityContext context, UUID casterId, Location location) {
+        long now = System.currentTimeMillis();
+        Long last = lastFeedback.get(casterId);
+        if (last != null && now - last < FEEDBACK_INTERVAL_MS) return;
+        lastFeedback.put(casterId, now);
+
+        context.effects().playFadingAura(location, PathwayBranding.liquidOf("Error"), 20);
+        context.effects().spawnParticle(Particle.HEART, location.clone().add(0, 1.6, 0), 5, 0.3, 0.3, 0.3);
+        context.effects().playSoundForPlayer(casterId, Sound.ENTITY_VILLAGER_YES, 0.6f, 1.2f);
+    }
+
+    private static int percent(double fraction) {
+        return (int) Math.round(fraction * 100);
     }
 }

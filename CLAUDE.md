@@ -98,6 +98,20 @@ The pure core of `domain` (`entities`, `services`, `spells`, `brewing`, `creatur
 - Клієнтські ассети (текстури інгредієнтів, «зачаровані» блоки фореджу) — серверний ресурспак `mysteries-resourcepack/`; датапак структур — `mysteries-datapack/`. Обидва роздаються поза Maven-збіркою (див. README ресурспаку).
 - **Матеріали предметів**: кожен предмет плагіну стоїть на музичній пластинці (`MUSIC_DISC_*`), одна на категорію, а НЕ на `PAPER` — ванільний папір споживає шлях Блазня як ресурс. Обробка пластинки (ліміт стака, зняття `jukebox_playable`) — тільки через `infrastructure.items.DiscItems`; розпізнавання предметів — по NBT, ніколи по матеріалу чи lore. Див. `.claude/rules/item-materials.md`.
 - Player state persists to `beyonders.json` in the plugin data folder, written by `BatchedBeyonderRepository` (batched save every 5 minutes + save on disable). Recipe unlocks persist to `recipe_unlocks.json`. Морські мітки Морської Пам'яті (Tyrant) — `waypoints.json` (`WaypointStore`, до 10 на гравця, пише після кожної мутації; здібності — через `context.waypoints()`).
+- Крадіжка (Error, Посл. 6 і 5) — `theft.json` (`infrastructure.theft.TheftLedger`, каркас
+  `WaypointStore`): один слот на злодія, **абсолютні** мітки (`stolenAt`, `firstUsedAt`) і
+  **власні строки в самому записі**, бо тіри різні (Прометей — 10/30 хв; Крадій снів —
+  30/60 хв і 6 год резерву на непокликану силу; записи з нулями читаються за сталими
+  Прометея). Той самий слот займають концептуальні крадіжки Посл. 5 під синтетичними
+  мітками (`conceptual:dream`, `conceptual:heart`, …) — звірка для них просто звільняє слот.
+  Вікно переживає релог і рестарт; звірку робить `theftLedger.sweep(...)` у
+  `ServiceContainer.startSchedulers()` (раз на старті + кожні 10 с), пригнічення — один `if`
+  в `AbilityExecutor.execute`. Здібності ходять через `context.beyonder()`
+  (`stealAbility`/`hasStolenAbility`/`holdsStolen`/`releaseStolen`/`getCreatureBeyonder`),
+  окремого контексту немає. Личина (Посл. 5) — виняток: живе в пам'яті `ChurchService`
+  (мапа `disguises` з абсолютним строком), НЕ персиститься, входить у гру одним хуком у
+  `ChurchService.membershipOf` і дістається зі здібності через `context.church()`
+  (`IChurchContext`). Див. `.claude/rules/ability-theft.md`.
 - Підпільний ринок: стан зборів персиститься в `gathering-state.json`
   (`GatheringSnapshotRepository`; час наступного збору + ескроу + черга повернень);
   світ-заглушка `mysteries_gathering` створюється ідемпотентно. Див. `.claude/rules/market-gathering.md`.

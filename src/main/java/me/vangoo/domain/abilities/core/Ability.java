@@ -65,6 +65,16 @@ public abstract class Ability {
         return getIdentity().canReplace(other.getIdentity());
     }
 
+    /**
+     * Множник вхідної втрати глузду для власника здібності: 1.0 — без опору,
+     * менше — пасивка захищає розум (див. {@code MentalFortitude}).
+     *
+     * @return множник у межах (0.0, 1.0]
+     */
+    public double getSanityLossMultiplier() {
+        return 1.0;
+    }
+
     public final AbilityResult execute(IAbilityContext context) {
         var beyonder = context.getCasterBeyonder();
         if (getType() == AbilityType.ACTIVE && context.cooldown().hasCooldown(beyonder, this)) {

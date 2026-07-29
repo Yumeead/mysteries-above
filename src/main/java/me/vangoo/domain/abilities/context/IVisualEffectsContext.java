@@ -160,6 +160,47 @@ public interface IVisualEffectsContext {
     void playGlowingDust(Location center, Color color);
 
     /**
+     * Різнокольорові вогники, що обертаються навколо сутності й рухаються разом із нею —
+     * «на тілі цілі виступають різнобарвні світла». Кольори чергуються по колу, тож одна
+     * ціль може нести кілька шляхів одночасно.
+     *
+     * @param entityId      кого обвиває
+     * @param colors        кольори вогників (порожній список — ефекту немає)
+     * @param radius        радіус орбіти (блоки)
+     * @param durationTicks скільки триває
+     */
+    void playOrbitingMotes(UUID entityId, java.util.List<Color> colors, double radius,
+                           int durationTicks);
+
+    /**
+     * Дрібна статична мітка з кольорового пилу: без анімації, без дрейфу, без розльоту —
+     * для ненав'язливих маркерів (сліди, підказки), яких може бути багато одночасно.
+     * Тримається {@code durationTicks} (перемальовується), потім гасне.
+     *
+     * @param center        центр мітки
+     * @param color         колір пилу
+     * @param spread        розкид пилинок довкола центру (блоки)
+     * @param size          розмір пилинки
+     * @param count         кількість пилинок
+     * @param durationTicks скільки мітка тримається; {@code <= 0} — один кадр
+     */
+    void playDustMark(Location center, Color color, double spread, float size, int count,
+                      int durationTicks);
+
+    /**
+     * Нерухомий слід по землі від {@code from} до {@code to}: ланцюжок пилинок кольору шляху,
+     * покладених на поверхню (пошук ґрунту під кожною точкою), який тримається
+     * {@code durationTicks}. Для «куди веде слід» — на відміну від променя, читається як шлях,
+     * а не як лазер у повітрі. Довгий маршрут обрізається за кількістю точок.
+     *
+     * @param from          початок сліду
+     * @param to            кінець сліду (той самий світ, інакше ефекту немає)
+     * @param color         колір пилу (з PathwayBranding)
+     * @param durationTicks скільки слід лежить
+     */
+    void playGroundTrail(Location from, Location to, Color color, int durationTicks);
+
+    /**
      * Разова висхідна спіраль навколо точки: пилинки кольору шляху шикуються у спіраль
      * від {@code base} до {@code base + height} і «повзуть» знизу вгору протягом
      * {@code durationTicks}, після чого ефект сам гасне. Самодостатній (володіє власним
@@ -295,4 +336,36 @@ public interface IVisualEffectsContext {
      */
     void playStandingCurtain(Location center, org.bukkit.util.Vector facing,
                              double width, double height, Color color, int durationTicks);
+
+    /**
+     * Блоки-примари: ОДИН гравець бачить {@code count} фальшивих блоків {@code material},
+     * що з'являються у порожніх клітинках у радіусі {@code radius} довкола {@code center};
+     * решта світу нічого не бачить. Через {@code durationTicks} усі клітинки самі
+     * повертаються до справжнього стану — ефект володіє власним таском, тож здібності
+     * не потрібна сесія. Клітинки, що перетинають хітбокс глядача, ніколи не підмінюються
+     * (жодного задушення в ілюзії).
+     *
+     * @param viewerId      єдиний гравець, який бачить ілюзію
+     * @param center        центр ілюзії
+     * @param material      матеріал фальшивих блоків
+     * @param count         скільки клітинок підмінити
+     * @param radius        радіус пошуку порожніх клітинок
+     * @param durationTicks скільки ілюзія тримається
+     */
+    void playPhantomBlocks(UUID viewerId, Location center, org.bukkit.Material material,
+                           int count, double radius, int durationTicks);
+
+    /**
+     * Куполоподібна оболонка, що РУХАЄТЬСЯ разом із сутністю: сітка з пилу кольору шляху
+     * (паралелі купола + кільце по землі), яка повільно обертається, доки не спливе
+     * {@code durationTicks}. На відміну від {@link #playSphereEffect} (сфера прив'язана до
+     * статичної точки) і {@link #playPersistentHalo} (плаский німб) — для вікон поглинання,
+     * щитів і коконів. Самодостатня (володіє власним таском).
+     *
+     * @param entityId      кого огортає оболонка
+     * @param color         колір (з PathwayBranding)
+     * @param radius        радіус оболонки
+     * @param durationTicks скільки оболонка тримається
+     */
+    void playWardingShell(UUID entityId, Color color, double radius, int durationTicks);
 }
