@@ -1130,6 +1130,173 @@ custom-items:
     custom-model-data: "crystal_jellyfish_tentacles"
 
   # ============================================
+  # 9 ERROR
+  # ============================================
+  blood_speckled_black_mosquito:
+    display-name: "§9Кров'яно-плямистий чорний комар"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "blood_speckled_black_mosquito"
+
+  candle_devourer_core:
+    display-name: "§9Ядро Пожирача Свічок"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: true
+    custom-model-data: "candle_devourer_core"
+
+  verbena_powder:
+    display-name: "§2Порошок вербени"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "verbena_powder"
+
+  # ============================================
+  # 8 ERROR
+  # ============================================
+  human_faced_pitcher_plant:
+    display-name: "§9Глечикова рослина з людським обличчям"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "human_faced_pitcher_plant"
+
+  soul_bewitching_insect_larvae:
+    display-name: "§9Личинки Душезачаровуючої комашиної колонії"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "soul_bewitching_insect_larvae"
+
+  anothers_tears:
+    display-name: "§3Чужі сльози"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "anothers_tears"
+
+  white_chestnut_balm:
+    display-name: "§2Бальзам білого каштана"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "white_chestnut_balm"
+
+  # ============================================
+  # 7 ERROR
+  # ============================================
+  sphinx_brain:
+    display-name: "§9Мозок Сфінкса"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "sphinx_brain"
+
+  soul_bewitching_adult_insect:
+    display-name: "§9Доросла комаха Душезачаровуючої колонії"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "soul_bewitching_adult_insect"
+
+  sphinx_blood:
+    display-name: "§3Кров Сфінкса"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "sphinx_blood"
+
+  soul_bewitching_colony_mucus:
+    display-name: "§3Слиз Душезачаровуючої комашиної колонії"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "soul_bewitching_colony_mucus"
+
+  # ============================================
+  # 6 ERROR
+  # ============================================
+  crystal_threadworm:
+    display-name: "§9Кришталевий ниткочерв"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: true
+    custom-model-data: "crystal_threadworm"
+
+  cloaked_specter_attachment:
+    display-name: "§9Приналежність Примари в Плащі"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "cloaked_specter_attachment"
+
+  cloaked_specter_residual_powder:
+    display-name: "§8Залишковий порошок Примари в Плащі"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "cloaked_specter_residual_powder"
+
+  larch_essential_oil:
+    display-name: "§2Ефірна олія модрини"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "larch_essential_oil"
+
+  # ============================================
+  # 5 ERROR
+  # ============================================
+  dream_eating_rat_heart:
+    display-name: "§9Серце Щура-Пожирача Снів"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: true
+    custom-model-data: "dream_eating_rat_heart"
+
+  spirit_of_depraved_breath:
+    display-name: "§9Дух Розбещеного Подиху"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: true
+    custom-model-data: "spirit_of_depraved_breath"
+
+  dream_eating_rat_blood:
+    display-name: "§3Кров Щура-Пожирача Снів"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "dream_eating_rat_blood"
+
+  despiritualized_depraved_breath:
+    display-name: "§8Розбещений подих без духовності"
+    material: MUSIC_DISC_FAR
+    lore:
+      - ""
+    glow: false
+    custom-model-data: "despiritualized_depraved_breath"
+
+  # ============================================
   # SECRET ORDERS (6c)
   # ============================================
   order_cipher_message:

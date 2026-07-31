@@ -25,6 +25,16 @@ public class AbilityContextFactory {
     private final ContractService contractService;
     private final AmplificationManager amplificationManager;
     private final me.vangoo.infrastructure.waypoints.WaypointStore waypointStore;
+    private final me.vangoo.infrastructure.theft.TheftLedger theftLedger;
+    private final PathwayManager pathwayManager;
+    private final me.vangoo.infrastructure.mythic.MythicCreatureGateway mythicCreatureGateway;
+    private final java.util.Map<String, me.vangoo.domain.creatures.CreatureDefinition> creatureRegistry;
+    /**
+     * Церкви приходять сеттером, а не конструктором: ChurchService будується пізніше за цю
+     * фабрику (той самий прийом, що й ChurchService.setFalsePapersCheck). Контексти
+     * створюються вже в рантаймі, тож на момент першого касту поле проставлене.
+     */
+    private ChurchService churchService;
 
 
     public AbilityContextFactory(
@@ -42,7 +52,11 @@ public class AbilityContextFactory {
             PotionManager potionManager,
             ContractService contractService,
             AmplificationManager amplificationManager,
-            me.vangoo.infrastructure.waypoints.WaypointStore waypointStore
+            me.vangoo.infrastructure.waypoints.WaypointStore waypointStore,
+            me.vangoo.infrastructure.theft.TheftLedger theftLedger,
+            PathwayManager pathwayManager,
+            me.vangoo.infrastructure.mythic.MythicCreatureGateway mythicCreatureGateway,
+            java.util.Map<String, me.vangoo.domain.creatures.CreatureDefinition> creatureRegistry
     ) {
         this.plugin = Objects.requireNonNull(plugin, "Plugin cannot be null");
         this.cooldownManager = Objects.requireNonNull(cooldownManager, "CooldownManager cannot be null");
@@ -59,8 +73,16 @@ public class AbilityContextFactory {
         this.contractService = Objects.requireNonNull(contractService, "ContractService cannot be null");
         this.amplificationManager = Objects.requireNonNull(amplificationManager, "AmplificationManager cannot be null");
         this.waypointStore = Objects.requireNonNull(waypointStore, "WaypointStore cannot be null");
+        this.theftLedger = Objects.requireNonNull(theftLedger, "TheftLedger cannot be null");
+        this.pathwayManager = Objects.requireNonNull(pathwayManager, "PathwayManager cannot be null");
+        this.mythicCreatureGateway = Objects.requireNonNull(mythicCreatureGateway, "MythicCreatureGateway cannot be null");
+        this.creatureRegistry = Objects.requireNonNull(creatureRegistry, "Creature registry cannot be null");
     }
 
+
+    public void setChurchService(ChurchService churchService) {
+        this.churchService = churchService;
+    }
 
     public IAbilityContext createContext(Player caster) {
         return new BukkitAbilityContext(
@@ -78,8 +100,13 @@ public class AbilityContextFactory {
                 recipeUnlockService,
                 potionManager,
                 contractService,
+                churchService,
                 amplificationManager,
-                waypointStore
+                waypointStore,
+                theftLedger,
+                pathwayManager,
+                mythicCreatureGateway,
+                creatureRegistry
         );
     }
 }

@@ -11,9 +11,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class VisualEffectsContext implements IVisualEffectsContext {
+
+    /** Період перемальовування нерухомих міток/слідів — пилинка живе приблизно стільки ж. */
+    private static final long MARK_REDRAW_PERIOD = 10L;
+    private static final double TRAIL_STEP = 0.7;
+    private static final int MAX_TRAIL_POINTS = 80;
 
     private final EffectManager effectManager;
     private final MysteriesAbovePlugin plugin;
@@ -209,6 +217,40 @@ public class VisualEffectsContext implements IVisualEffectsContext {
     }
 
     @Override
+    public void playOrbitingMotes(UUID entityId, List<Color> colors, double radius, int durationTicks) {
+        Entity entity = Bukkit.getEntity(entityId);
+        if (entity == null || colors == null || colors.isEmpty()) return;
+
+        final int motes = Math.max(3, colors.size() * 2);
+        new BukkitRunnable() {
+            int ticks = 0;
+
+            @Override
+            public void run() {
+                if (ticks >= durationTicks || !entity.isValid()) {
+                    this.cancel();
+                    return;
+                }
+                Location base = entity.getLocation().add(0, 1.0, 0);
+                World world = base.getWorld();
+                if (world == null) {
+                    this.cancel();
+                    return;
+                }
+                double spin = ticks * 0.25;
+                for (int i = 0; i < motes; i++) {
+                    double angle = spin + 2 * Math.PI * i / motes;
+                    double y = Math.sin(spin + i) * 0.5;
+                    Location p = base.clone().add(Math.cos(angle) * radius, y, Math.sin(angle) * radius);
+                    world.spawnParticle(Particle.DUST, p, 1, 0, 0, 0, 0,
+                            new Particle.DustOptions(colors.get(i % colors.size()), 1.0f));
+                }
+                ticks += 2;
+            }
+        }.runTaskTimer(plugin, 0L, 2L);
+    }
+
+    @Override
     public void playTrailEffect(UUID entityId, Particle particle, int durationTicks) {
         Entity entity = Bukkit.getEntity(entityId);
         if (entity == null) return;
@@ -365,6 +407,77 @@ public class VisualEffectsContext implements IVisualEffectsContext {
                 tick++;
             }
         }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    @Override
+    public void playDustMark(Location center, Color color, double spread, float size, int count,
+                             int durationTicks) {
+        World world = center.getWorld();
+        if (world == null || color == null) return;
+        Particle.DustOptions dust = new Particle.DustOptions(color, size);
+        if (durationTicks <= 0) {
+            world.spawnParticle(Particle.DUST, center, count, spread, spread, spread, 0, dust);
+            return;
+        }
+        // Пилинка живе ~1 с, тож «висіти» мітка може лише через перемальовування.
+        new BukkitRunnable() {
+            int tick = 0;
+
+            @Override
+            public void run() {
+                if (tick > durationTicks) {
+                    this.cancel();
+                    return;
+                }
+                world.spawnParticle(Particle.DUST, center, count, spread, spread, spread, 0, dust);
+                tick += MARK_REDRAW_PERIOD;
+            }
+        }.runTaskTimer(plugin, 0L, MARK_REDRAW_PERIOD);
+    }
+
+    @Override
+    public void playGroundTrail(Location from, Location to, Color color, int durationTicks) {
+        World world = from.getWorld();
+        if (world == null || color == null || world != to.getWorld()) return;
+
+        Vector step = to.toVector().subtract(from.toVector());
+        double distance = step.length();
+        if (distance < 1.0) return;
+        int points = Math.max(1, Math.min(MAX_TRAIL_POINTS, (int) (distance / TRAIL_STEP)));
+        step.multiply(1.0 / points);
+
+        // Прив'язка до землі дорога (пошук блоків), а слід нерухомий — рахуємо один раз.
+        List<Location> path = new ArrayList<>();
+        for (int i = 1; i <= points; i++) {
+            path.add(groundUnder(from.clone().add(step.clone().multiply(i))));
+        }
+
+        Particle.DustOptions dust = new Particle.DustOptions(color, 1.0f);
+        new BukkitRunnable() {
+            int tick = 0;
+
+            @Override
+            public void run() {
+                if (tick > durationTicks) {
+                    this.cancel();
+                    return;
+                }
+                for (Location point : path) {
+                    world.spawnParticle(Particle.DUST, point, 2, 0.08, 0.02, 0.08, 0, dust);
+                }
+                tick += MARK_REDRAW_PERIOD;
+            }
+        }.runTaskTimer(plugin, 0L, MARK_REDRAW_PERIOD);
+    }
+
+    /** Поверхня під точкою (до 6 блоків униз), щоб слід лежав по землі, а не висів у повітрі. */
+    private Location groundUnder(Location point) {
+        Location probe = point.clone();
+        for (int i = 0; i < 6; i++) {
+            if (probe.getBlock().getType().isSolid()) return probe.add(0, 1.15, 0);
+            probe.add(0, -1, 0);
+        }
+        return point.clone().add(0, 0.15, 0);
     }
 
     @Override
@@ -860,5 +973,88 @@ public class VisualEffectsContext implements IVisualEffectsContext {
                 tick++;
             }
         }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    @Override
+    public void playPhantomBlocks(UUID viewerId, Location center, Material material,
+                                  int count, double radius, int durationTicks) {
+        Player viewer = Bukkit.getPlayer(viewerId);
+        if (viewer == null || material == null || center.getWorld() == null) return;
+        if (!center.getWorld().equals(viewer.getWorld())) return;
+
+        final org.bukkit.block.data.BlockData fake = material.createBlockData();
+        final List<Location> faked = new ArrayList<>();
+        final int r = (int) Math.ceil(radius);
+
+        // ponytail: випадкові проби замість повного сканування куба — досить для ілюзії
+        for (int attempt = 0; attempt < count * 20 && faked.size() < count; attempt++) {
+            Location loc = center.clone().add(
+                    ThreadLocalRandom.current().nextInt(-r, r + 1),
+                    ThreadLocalRandom.current().nextInt(-r, r + 1),
+                    ThreadLocalRandom.current().nextInt(-r, r + 1));
+            // підміняємо лише порожнечу і ніколи біля самого глядача (жодного задушення в ілюзії)
+            if (!loc.getBlock().getType().isAir()) continue;
+            if (loc.distanceSquared(viewer.getLocation()) < 4.0) continue;
+
+            faked.add(loc);
+            viewer.sendBlockChange(loc, fake);
+        }
+        if (faked.isEmpty()) return;
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Player p = Bukkit.getPlayer(viewerId);
+            // після реконекту клієнт і так отримує справжні чанки — повертати нема чого
+            if (p == null || !p.isOnline()) return;
+            faked.forEach(loc -> p.sendBlockChange(loc, loc.getBlock().getBlockData()));
+        }, durationTicks);
+    }
+
+    @Override
+    public void playWardingShell(UUID entityId, Color color, double radius, int durationTicks) {
+        if (color == null) return;
+        final Particle.DustOptions shell = new Particle.DustOptions(color, 0.9f);
+        final Particle.DustOptions floor = new Particle.DustOptions(color, 1.3f);
+        final int rings = 5;
+        final int pointsPerRing = 12;
+
+        new BukkitRunnable() {
+            int ticks = 0;
+
+            @Override
+            public void run() {
+                Entity entity = Bukkit.getEntity(entityId);
+                if (ticks >= durationTicks || entity == null || !entity.isValid()) {
+                    this.cancel();
+                    return;
+                }
+                World world = entity.getWorld();
+                Location center = entity.getLocation().add(0, 1.0, 0);
+                double spin = ticks * 0.12;
+
+                // Паралелі купола: від пояса вниз (-60°) до маківки (+90°)
+                for (int r = 0; r <= rings; r++) {
+                    double lat = -Math.PI / 3 + (Math.PI / 2 + Math.PI / 3) * r / rings;
+                    double y = Math.sin(lat) * radius;
+                    double ringRadius = Math.cos(lat) * radius;
+                    int points = Math.max(4, (int) Math.round(pointsPerRing * Math.cos(lat)));
+                    for (int i = 0; i < points; i++) {
+                        double angle = spin + 2 * Math.PI * i / points;
+                        world.spawnParticle(Particle.DUST,
+                                center.clone().add(Math.cos(angle) * ringRadius, y, Math.sin(angle) * ringRadius),
+                                1, 0, 0, 0, 0, shell);
+                    }
+                }
+
+                // Другий шар: щільніше кільце по землі — оболонка «стоїть», а не висить
+                Location base = entity.getLocation().add(0, 0.1, 0);
+                for (int i = 0; i < pointsPerRing; i++) {
+                    double angle = -spin + 2 * Math.PI * i / pointsPerRing;
+                    world.spawnParticle(Particle.DUST,
+                            base.clone().add(Math.cos(angle) * radius, 0, Math.sin(angle) * radius),
+                            1, 0, 0, 0, 0, floor);
+                }
+                ticks += 2;
+            }
+        }.runTaskTimer(plugin, 0L, 2L);
     }
 }

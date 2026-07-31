@@ -34,6 +34,7 @@ public interface IAbilityContext {
     IGlowingContext glowing();
     IMessagingContext messaging();
     IContractContext contracts();
+    IChurchContext church();
     IAmplificationContext amplification();
     IWaypointContext waypoints();
 }

@@ -108,6 +108,7 @@ public class ServiceContainer {
     private me.vangoo.application.services.DivinePunishment divinePunishment;
     private me.vangoo.application.services.ContractService contractService;
     private me.vangoo.infrastructure.waypoints.WaypointStore waypointStore;
+    private me.vangoo.infrastructure.theft.TheftLedger theftLedger;
 
     // Schedulers
     private PassiveAbilityScheduler passiveAbilityScheduler;
@@ -264,6 +265,10 @@ public class ServiceContainer {
         // --- Tyrant: морські мітки (Морська Пам'ять) ---
         this.waypointStore = new me.vangoo.infrastructure.waypoints.WaypointStore(
                 plugin.getDataFolder() + File.separator + "waypoints.json");
+
+        // --- Error: реєстр крадіжок сили (Прометей, Seq 6) ---
+        this.theftLedger = new me.vangoo.infrastructure.theft.TheftLedger(
+                plugin.getDataFolder() + File.separator + "theft.json");
     }
 
     private void initializeApplicationServices(fr.skytasul.glowingentities.GlowingEntities glowingEntities,
@@ -311,7 +316,11 @@ public class ServiceContainer {
                 potionManager,
                 contractService,
                 amplificationManager,
-                waypointStore
+                waypointStore,
+                theftLedger,
+                pathwayManager,
+                mythicCreatureGateway,
+                creatureRegistry
         );
 
         this.abilityExecutor = new AbilityExecutor(
@@ -321,7 +330,8 @@ public class ServiceContainer {
                 passiveAbilityManager,
                 abilityContextFactory,
                 sanityPenaltyHandler,
-                eventPublisher
+                eventPublisher,
+                theftLedger
         );
 
         this.potionCraftingService = new PotionCraftingService(
@@ -346,6 +356,8 @@ public class ServiceContainer {
                 beyonderService, pathwayManager, potionManager, potionRecipeConfig,
                 recipeUnlockService, marketItemClassifier, marketItemNamer, creatureNamer, walletService,
                 creatureRegistry, membershipRepository, churchStateRepository);
+        // Личина (Помилка, Посл. 5) ходить у церкви через контекст здібностей.
+        this.abilityContextFactory.setChurchService(churchService);
         this.churchPriestService = new me.vangoo.infrastructure.citizens.ChurchPriestService(institutionRegistry);
         this.churchStructurePlacer = new me.vangoo.infrastructure.organizations.ChurchStructurePlacer(plugin);
         this.churchSiteService = new me.vangoo.infrastructure.organizations.ChurchSiteService(
@@ -577,6 +589,25 @@ public class ServiceContainer {
 
         // Start batched save scheduler (every 5 minutes)
         startBatchedSaveScheduler();
+
+        // Крадіжки сили: один прохід зараз (релог/рестарт/крах) і далі кожні 10 с.
+        theftLedger.sweep(this::revokeStolenAbility);
+        plugin.getServer().getScheduler().runTaskTimer(
+                plugin, () -> theftLedger.sweep(this::revokeStolenAbility), 200L, 200L);
+    }
+
+    /** Відібрати в злодія вкрадену здібність, коли її 10 хвилин минули. */
+    private void revokeStolenAbility(java.util.UUID thiefId,
+                                     me.vangoo.domain.valueobjects.AbilityIdentity identity) {
+        me.vangoo.domain.entities.Beyonder thief = beyonderService.getBeyonder(thiefId);
+        if (thief == null || !thief.removeAbility(identity)) {
+            return;
+        }
+        beyonderService.updateBeyonder(thief);
+        org.bukkit.entity.Player player = plugin.getServer().getPlayer(thiefId);
+        if (player != null) {
+            player.sendMessage(org.bukkit.ChatColor.DARK_PURPLE + "Вкрадена сила вислизнула з вас.");
+        }
     }
 
     private void startBatchedSaveScheduler() {

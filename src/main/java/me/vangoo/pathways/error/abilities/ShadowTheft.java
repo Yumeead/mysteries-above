@@ -150,7 +150,8 @@ public class ShadowTheft extends ActiveAbility {
         return true;
     }
 
-    private boolean isProtected(ItemStack item) {
+    /** Спільний список недоторканних предметів для крадіжок шляху Помилки. */
+    static boolean isProtected(ItemStack item) {
         Material type = item.getType();
 
         // Базовий захист цінних предметів

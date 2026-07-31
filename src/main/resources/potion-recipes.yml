@@ -5,14 +5,20 @@
 recipes:
   Error:
     9:
-      main: [sphinx_brain]
-      auxiliary: [black_mosquito]
+      main: [blood_speckled_black_mosquito, candle_devourer_core]
+      auxiliary: [verbena_powder]
     8:
-      main: [sphinx_brain]
-      auxiliary: [lavar_octopus_crystal, black_mosquito]
+      main: [human_faced_pitcher_plant, soul_bewitching_insect_larvae]
+      auxiliary: [anothers_tears, white_chestnut_balm]
     7:
-      main: [plague_serpent_bile]
-      auxiliary: [black_mosquito]
+      main: [sphinx_brain, soul_bewitching_adult_insect]
+      auxiliary: [sphinx_blood, soul_bewitching_colony_mucus]
+    6:
+      main: [crystal_threadworm, cloaked_specter_attachment]
+      auxiliary: [cloaked_specter_residual_powder, larch_essential_oil]
+    5:
+      main: [dream_eating_rat_heart, spirit_of_depraved_breath]
+      auxiliary: [dream_eating_rat_blood, despiritualized_depraved_breath]
 
   Visionary:
     9:

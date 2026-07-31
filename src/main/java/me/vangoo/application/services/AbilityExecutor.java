@@ -18,6 +18,7 @@ public class AbilityExecutor {
     private final AbilityContextFactory abilityContextFactory;
     private final SanityPenaltyHandler sanityPenaltyHandler;
     private final DomainEventPublisher eventPublisher;
+    private final me.vangoo.infrastructure.theft.TheftLedger theftLedger;
     private GatheringAbilityGuard gatheringAbilityGuard;
 
     public void setGatheringAbilityGuard(GatheringAbilityGuard guard) {
@@ -26,7 +27,8 @@ public class AbilityExecutor {
 
     public AbilityExecutor(BeyonderService beyonderService, AbilityLockManager abilityLockManager,
                            RampageManager rampageManager, PassiveAbilityManager passiveAbilityManager,
-                           AbilityContextFactory abilityContextFactory, SanityPenaltyHandler sanityPenaltyHandler, DomainEventPublisher eventPublisher) {
+                           AbilityContextFactory abilityContextFactory, SanityPenaltyHandler sanityPenaltyHandler,
+                           DomainEventPublisher eventPublisher, me.vangoo.infrastructure.theft.TheftLedger theftLedger) {
         this.beyonderService = beyonderService;
         this.abilityLockManager = abilityLockManager;
         this.rampageManager = rampageManager;
@@ -34,6 +36,7 @@ public class AbilityExecutor {
         this.abilityContextFactory = abilityContextFactory;
         this.sanityPenaltyHandler = sanityPenaltyHandler;
         this.eventPublisher = eventPublisher;
+        this.theftLedger = theftLedger;
     }
 
 
@@ -53,6 +56,11 @@ public class AbilityExecutor {
             return AbilityResult.failure("Здібності заблоковані!");
         }
 
+        // Крадіжка сили (Помилка Seq 6): у жертви ця сила мовчить, доки не закінчиться вікно.
+        if (theftLedger.isSuppressed(beyonder.getPlayerId(), ability.getIdentity())) {
+            return AbilityResult.failure("Цю силу у вас вкрали — вона не відгукується.");
+        }
+
         IAbilityContext context = abilityContextFactory.createContext(player);
 
         // Check cooldowns (for active abilities)
@@ -61,6 +69,10 @@ public class AbilityExecutor {
                     "Cooldown: " + context.cooldown().getRemainingCooldownSeconds(beyonder, ability) + "с"
             );
         }
+
+        // Перший каст вкраденої сили запускає її короткий строк володіння (до того вона
+        // висіла резервним, до 6 год). Тір і строки знає сам запис крадіжки — тут лише мітка.
+        theftLedger.markUsed(beyonder.getPlayerId(), ability.getIdentity());
 
         // Delegate to domain - all business logic happens here
         AbilityResult result = beyonder.useAbility(ability, context);

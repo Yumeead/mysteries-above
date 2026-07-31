@@ -181,6 +181,10 @@ public class ChurchMenu {
     }
 
     private void confirmLeave(Player player) {
+        if (!churchService.isMember(player.getUniqueId())) { // личина членства не дає
+            player.sendMessage(PREFIX + ChatColor.RED + "Ви не член церкви.");
+            return;
+        }
         String churchName = churchService.churchOf(player.getUniqueId())
                 .map(Institution::displayName).orElse("цю церкву");
         ItemStack give = button(Material.PAPER, ChatColor.RED + "Ваш вклад і ранг згорять",
