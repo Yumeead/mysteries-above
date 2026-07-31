@@ -534,3 +534,28 @@ creatures:
     spawn:
       natural: { biomes: [DEEP_OCEAN, DEEP_FROZEN_OCEAN], replace: [], chance: 0.00075 }
       structure: { keys: [mysteries, nova_structures], chance: 0.1 }
+
+  # ====================== БЕЗ ШЛЯХУ: ДУХИ ======================
+  # Виняток із правила «одне створіння на (шлях × послідовність)»: дух не належить
+  # жодному шляху. З ним працює Могильник (Death, Посл. 8), згодом Spirit Warlock
+  # (Darkness) — тому pathway задано явно неіснуючим ім'ям "spirits". Наслідки
+  # свідомі й безпечні: ухил Закону Конвергенції на нього не діє, а церкви й ордени
+  # не беруть його у HUNT-завдання (їхній pathway→group резолв дає null).
+  # sequence: 8 — рівень сили, а не належність; окремо тримає духа поза пулом
+  # церковних дуелей ініціації (той бере лише sequence 9).
+  # Дух — не джерело інгредієнтів (loot 0/0), а атмосфера й матеріал для Спілкування
+  # з духами: могильник вербує саме такого, замість платити за прикликання.
+  # Тематичні місця смерті: Долина душевного піску й печери (у Deep Dark ванільного
+  # природного спавну немає — там дух приходить лише через лут Стародавнього міста).
+  spirit_wandering:
+    base_entity: VEX
+    pathway: spirits
+    sequence: 8
+    tier: common
+    loot:
+      min_items: 0
+      max_items: 0
+      items: []
+    spawn:
+      natural: { biomes: [SOUL_SAND_VALLEY, DRIPSTONE_CAVES, DEEP_DARK], replace: [SKELETON, STRAY, ZOMBIE], chance: 0.02 }
+      structure: { keys: [ancient_city, abandoned_mineshaft], chance: 0.08 }

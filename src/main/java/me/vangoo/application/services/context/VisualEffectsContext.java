@@ -803,4 +803,62 @@ public class VisualEffectsContext implements IVisualEffectsContext {
             }
         }.runTaskTimer(plugin, 0L, 1L);
     }
+
+    @Override
+    public void playGraspingHands(Location target, Color color, int durationTicks) {
+        final World world = target.getWorld();
+        if (world == null) return;
+        final Location center = target.clone();
+        final int hands = 4;
+        final int armSegments = 4;
+
+        new BukkitRunnable() {
+            int tick = 0;
+
+            @Override
+            public void run() {
+                if (tick >= durationTicks || center.getWorld() == null) {
+                    this.cancel();
+                    return;
+                }
+                // Пульс стискання: долоні то сходяться до цілі, то трохи попускають.
+                double squeeze = 0.35 + 0.65 * Math.abs(Math.cos(tick * 0.12));
+                double radius = 1.1 * squeeze;
+                final Particle.DustOptions dust = new Particle.DustOptions(color, 1.1f);
+
+                for (int h = 0; h < hands; h++) {
+                    double angle = (2 * Math.PI / hands) * h + tick * 0.02; // повільне обертання
+                    // Передпліччя: тягнеться з-під землі вгору, нахиляючись до цілі.
+                    for (int seg = 0; seg <= armSegments; seg++) {
+                        double frac = (double) seg / armSegments;
+                        double r = radius * (1.0 - frac * 0.45);
+                        world.spawnParticle(Particle.DUST,
+                                center.clone().add(Math.cos(angle) * r, frac * 1.3, Math.sin(angle) * r),
+                                1, 0, 0, 0, 0, dust);
+                    }
+                    // Другий шар: пальці — душевні іскри на вершині, зігнуті всередину.
+                    double fingerRadius = radius * 0.55;
+                    for (int finger = -1; finger <= 1; finger++) {
+                        double fingerAngle = angle + finger * 0.22;
+                        world.spawnParticle(Particle.SCULK_SOUL,
+                                center.clone().add(Math.cos(fingerAngle) * fingerRadius, 1.35,
+                                        Math.sin(fingerAngle) * fingerRadius),
+                                1, 0.02, 0.02, 0.02, 0.0);
+                    }
+                }
+
+                // Третій шар: кільце на землі — ціль тримає не лише руки, а й сама земля.
+                if (tick % 4 == 0) {
+                    final int ringPoints = 10;
+                    for (int i = 0; i < ringPoints; i++) {
+                        double a = (2 * Math.PI / ringPoints) * i;
+                        world.spawnParticle(Particle.DUST,
+                                center.clone().add(Math.cos(a) * 1.2, 0.1, Math.sin(a) * 1.2),
+                                1, 0, 0, 0, 0, dust);
+                    }
+                }
+                tick++;
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+    }
 }

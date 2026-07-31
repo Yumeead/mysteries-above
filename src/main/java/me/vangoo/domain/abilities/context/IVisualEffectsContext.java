@@ -295,4 +295,18 @@ public interface IVisualEffectsContext {
      */
     void playStandingCurtain(Location center, org.bukkit.util.Vector facing,
                              double width, double height, Color color, int durationTicks);
+
+    /**
+     * ХВАТ: примарні руки, що піднімаються з-під ніг цілі й стискаються навколо неї, плюс
+     * кільце на землі («земля не пускає») і душевні іскри на кінчиках пальців. Свідомо НЕ
+     * {@link #playCircleEffect} і не {@link #playVortexEffect}: там кільце й вихор, а тут
+     * потрібні саме руки, що тримають — інакше іммобілізація читається як звичайна аура.
+     * Самодостатній (володіє власним таском); лише малює — сповільнення накладає здібність.
+     *
+     * @param target        локація цілі (ноги); ефект статичний, тож для довгого хвату
+     *                      викликається повторно за новою локацією
+     * @param color         колір рук (з PathwayBranding)
+     * @param durationTicks скільки руки тримаються
+     */
+    void playGraspingHands(Location target, Color color, int durationTicks);
 }

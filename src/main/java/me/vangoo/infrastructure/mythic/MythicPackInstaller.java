@@ -18,6 +18,8 @@ public final class MythicPackInstaller {
             "Mobs/error.yml", "Mobs/visionary.yml", "Mobs/door.yml",
             "Mobs/justiciar.yml", "Mobs/whitetower.yml", "Mobs/fool.yml",
             "Mobs/sun.yml", "Mobs/tyrant.yml",
+            // Духи не належать жодному шляху (Death Посл. 8, згодом Darkness) — окремий файл.
+            "Mobs/spirits.yml",
             "Skills/error.yml", "Skills/visionary.yml", "Skills/door.yml",
             "Skills/justiciar.yml", "Skills/whitetower.yml", "Skills/fool.yml",
     };
