@@ -33,7 +33,7 @@ paths:
 1. Реєстр — **інстанс-поле** `Map<UUID, Session>` (`ConcurrentHashMap`), **ніколи не static**: екземпляр здібності і так спільний для pathway.
 2. Повторний каст **замінює** сесію власника: `remove` + `cancel()` старої перед створенням нової.
 3. Сесія володіє власним `BukkitTask` (`context.scheduling().scheduleRepeating(session::tick, ...)` + `session.bindTask(task)`), а всередині `tick()` ходить у **Bukkit напряму**. Не захоплюй `IAbilityContext` кастера у сесію — це чужий стан. Виняток: глобальний, не прив'язаний до кастера сервіс (`IEventContext` у `DreamVisionSession`) тримати можна; тест — «чи несе це посилання ідентичність одного кастера?».
-4. Здібність перекриває `cleanUp()` і скасовує всі сесії — це викликається через `Beyonder.cleanUpAbilities()` при вимкненні плагіна.
+4. Здібність перекриває `cleanUp()` і скасовує всі сесії — це викликається через `Beyonder.cleanUpAbilities()` при вимкненні плагіна. **Виняток — сесія з живим станом у світі** (викликані істоти, NPC): `cleanUp()` кличеться ще й на вихід **будь-якого** гравця (`PassiveAbilityManager.cleanupPlayer`) і не знає, хто вийшов, тож деструктивний `cleanUp()` прибрав би чужі істоти. Такі сесії гаснуть самі, побачивши власника офлайн (еталони: `SpiritVisionSession`, `SpiritCompanionSession`); див. `.claude/rules/summoned-creatures.md`.
 
 ## Анти-патерни (реальний борг цього репо)
 
