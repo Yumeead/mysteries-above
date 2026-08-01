@@ -20,9 +20,9 @@ import java.util.logging.Logger;
  * Citizens2 Trait attached to every Marionettist puppet NPC.
  *
  * Stores:
- *  - The original target's Beyonder data (pathway, sequence, spirituality)
- *  - The original target's inventory snapshot
- *  - Which caster UUID "owns" this marionette
+ * - The original target's Beyonder data (pathway, sequence, spirituality)
+ * - The original target's inventory snapshot
+ * - Which caster UUID "owns" this marionette
  *
  * The trait is intentionally lightweight — it is a pure data carrier.
  * All logic lives in MarionettistControl.
@@ -33,8 +33,10 @@ public class MarionetteMinionTrait extends Trait {
     private static final Logger LOGGER = Logger.getLogger(MarionetteMinionTrait.class.getName());
 
     /**
-     * Citizens створює трейт рефлексією (конструктор без аргументів) і викликає {@link #load(DataKey)}
-     * під час завантаження NPC. Для регідрації шляху потрібен {@link PathwayManager}, тож подаємо його
+     * Citizens створює трейт рефлексією (конструктор без аргументів) і викликає
+     * {@link #load(DataKey)}
+     * під час завантаження NPC. Для регідрації шляху потрібен
+     * {@link PathwayManager}, тож подаємо його
      * статичним bootstrap-хуком із плагіна ДО того, як Citizens завантажить NPC.
      */
     private static PathwayManager pathwayManager;
@@ -44,21 +46,22 @@ public class MarionetteMinionTrait extends Trait {
     }
 
     // ── Captured from the original target ───────────────────────────────────
-    private java.util.UUID    ownerCasterId;
-    private Pathway           capturedPathway;    // null if target was not a Beyonder
-    private Sequence          capturedSequence;   // null if target was not a Beyonder
-    private int               capturedSpirituality;
-    private int               capturedMaxSpirituality;
-    private List<ItemStack>   capturedInventory   = new ArrayList<>();
-    private List<Ability>     capturedAbilities   = new ArrayList<>();
-    private String            originalPlayerName;  // for skin display
-    private String            skinTextureValue;    // null if target had no skin
-    private String            skinTextureSignature; // null if target had no skin
+    private java.util.UUID ownerCasterId;
+    private Pathway capturedPathway; // null if target was not a Beyonder
+    private Sequence capturedSequence; // null if target was not a Beyonder
+    private int capturedSpirituality;
+    private int capturedMaxSpirituality;
+    private List<ItemStack> capturedInventory = new ArrayList<>();
+    private List<Ability> capturedAbilities = new ArrayList<>();
+    private String originalPlayerName; // for skin display
+    private String skinTextureValue; // null if target had no skin
+    private String skinTextureSignature; // null if target had no skin
     // Тип сутності цілі: PLAYER для гравця, конкретний моб для не-гравця. Визначає,
-    // як виглядає свап (гравець-скін vs packet-маска моба) і як відновити NPC на виході.
-    private String            marionetteEntityType = org.bukkit.entity.EntityType.PLAYER.name();
-    private double            capturedMaxHealth   = 20.0; // макс. HP цілі (з бонусом послідовності)
-    private double            capturedHealth      = 20.0; // поточне HP цілі на момент перетворення
+    // як виглядає свап (гравець-скін vs packet-маска моба) і як відновити NPC на
+    // виході.
+    private String marionetteEntityType = org.bukkit.entity.EntityType.PLAYER.name();
+    private double capturedMaxHealth = 20.0; // макс. HP цілі (з бонусом послідовності)
+    private double capturedHealth = 20.0; // поточне HP цілі на момент перетворення
 
     public MarionetteMinionTrait() {
         super("marionette_minion");
@@ -71,38 +74,43 @@ public class MarionetteMinionTrait extends Trait {
      */
     public void initialise(
             java.util.UUID ownerCasterId,
-            String         originalPlayerName,
-            Beyonder        targetBeyonder,        // may be null
-            List<ItemStack> capturedInventory
-    ) {
-        this.ownerCasterId       = ownerCasterId;
-        this.originalPlayerName  = originalPlayerName;
-        this.capturedInventory   = new ArrayList<>(capturedInventory);
+            String originalPlayerName,
+            Beyonder targetBeyonder, // may be null
+            List<ItemStack> capturedInventory) {
+        this.ownerCasterId = ownerCasterId;
+        this.originalPlayerName = originalPlayerName;
+        this.capturedInventory = new ArrayList<>(capturedInventory);
 
         if (targetBeyonder != null) {
-            this.capturedPathway         = targetBeyonder.getPathway();
-            this.capturedSequence        = targetBeyonder.getSequence();
-            this.capturedSpirituality    = targetBeyonder.getSpiritualityValue();
+            this.capturedPathway = targetBeyonder.getPathway();
+            this.capturedSequence = targetBeyonder.getSequence();
+            this.capturedSpirituality = targetBeyonder.getSpiritualityValue();
             this.capturedMaxSpirituality = targetBeyonder.getMaxSpirituality();
             // Deep-copy ability list so mutation of the live beyonder doesn't affect us
-            this.capturedAbilities       = new ArrayList<>(targetBeyonder.getAbilities());
+            this.capturedAbilities = new ArrayList<>(targetBeyonder.getAbilities());
         }
     }
 
     // ── Skin texture ────────────────────────────────────────────────────────
 
     public void setSkin(String value, String signature) {
-        this.skinTextureValue     = value;
+        this.skinTextureValue = value;
         this.skinTextureSignature = signature;
     }
 
-    public String getSkinTextureValue()     { return skinTextureValue; }
-    public String getSkinTextureSignature() { return skinTextureSignature; }
+    public String getSkinTextureValue() {
+        return skinTextureValue;
+    }
+
+    public String getSkinTextureSignature() {
+        return skinTextureSignature;
+    }
 
     // ── Тип сутності цілі (PLAYER vs моб) ─────────────────────────────────────
 
     public void setMarionetteEntityType(org.bukkit.entity.EntityType type) {
-        if (type != null) this.marionetteEntityType = type.name();
+        if (type != null)
+            this.marionetteEntityType = type.name();
     }
 
     public org.bukkit.entity.EntityType getMarionetteEntityType() {
@@ -113,7 +121,9 @@ public class MarionetteMinionTrait extends Trait {
         }
     }
 
-    /** True, якщо ціль була не-гравцем (мобом) — свап іде через packet-маску моба. */
+    /**
+     * True, якщо ціль була не-гравцем (мобом) — свап іде через packet-маску моба.
+     */
     public boolean isMobMarionette() {
         return getMarionetteEntityType() != org.bukkit.entity.EntityType.PLAYER;
     }
@@ -121,16 +131,22 @@ public class MarionetteMinionTrait extends Trait {
     // ── Captured health (HP цілі разом із бонусом від послідовності) ───────────
 
     public void setCapturedHealth(double current, double max) {
-        this.capturedHealth    = current;
+        this.capturedHealth = current;
         this.capturedMaxHealth = max;
     }
 
-    public double getCapturedHealth()    { return capturedHealth; }
-    public double getCapturedMaxHealth() { return capturedMaxHealth; }
+    public double getCapturedHealth() {
+        return capturedHealth;
+    }
+
+    public double getCapturedMaxHealth() {
+        return capturedMaxHealth;
+    }
 
     /**
      * Повна заміна знімка інвентаря маріонетки (повна персистентність).
-     * Список — це повний вміст інвентаря (storage+броня+друга рука), null = порожній слот.
+     * Список — це повний вміст інвентаря (storage+броня+друга рука), null =
+     * порожній слот.
      */
     public void setCapturedInventory(List<ItemStack> inventory) {
         this.capturedInventory = new ArrayList<>(inventory);
@@ -138,14 +154,37 @@ public class MarionetteMinionTrait extends Trait {
 
     // ── Getters ──────────────────────────────────────────────────────────────
 
-    public java.util.UUID    getOwnerCasterId()        { return ownerCasterId; }
-    public String            getOriginalPlayerName()    { return originalPlayerName; }
-    public Pathway           getCapturedPathway()       { return capturedPathway; }
-    public Sequence          getCapturedSequence()      { return capturedSequence; }
-    public int               getCapturedSpirituality()  { return capturedSpirituality; }
-    public int               getCapturedMaxSpirituality(){ return capturedMaxSpirituality; }
-    public List<ItemStack>   getCapturedInventory()     { return capturedInventory; }
-    public List<Ability>     getCapturedAbilities()     { return capturedAbilities; }
+    public java.util.UUID getOwnerCasterId() {
+        return ownerCasterId;
+    }
+
+    public String getOriginalPlayerName() {
+        return originalPlayerName;
+    }
+
+    public Pathway getCapturedPathway() {
+        return capturedPathway;
+    }
+
+    public Sequence getCapturedSequence() {
+        return capturedSequence;
+    }
+
+    public int getCapturedSpirituality() {
+        return capturedSpirituality;
+    }
+
+    public int getCapturedMaxSpirituality() {
+        return capturedMaxSpirituality;
+    }
+
+    public List<ItemStack> getCapturedInventory() {
+        return capturedInventory;
+    }
+
+    public List<Ability> getCapturedAbilities() {
+        return capturedAbilities;
+    }
 
     /** True only if the original target was a Beyonder. */
     public boolean wasBeyonder() {
@@ -174,13 +213,18 @@ public class MarionetteMinionTrait extends Trait {
 
     @Override
     public void save(DataKey key) {
-        if (ownerCasterId != null) key.setString("owner", ownerCasterId.toString());
-        if (originalPlayerName != null) key.setString("name", originalPlayerName);
-        if (skinTextureValue != null) key.setString("skin.value", skinTextureValue);
-        if (skinTextureSignature != null) key.setString("skin.signature", skinTextureSignature);
+        if (ownerCasterId != null)
+            key.setString("owner", ownerCasterId.toString());
+        if (originalPlayerName != null)
+            key.setString("name", originalPlayerName);
+        if (skinTextureValue != null)
+            key.setString("skin.value", skinTextureValue);
+        if (skinTextureSignature != null)
+            key.setString("skin.signature", skinTextureSignature);
         key.setString("entityType", marionetteEntityType);
 
-        // Шлях/послідовність зберігаємо як ім'я+рівень (регідрація через PathwayManager).
+        // Шлях/послідовність зберігаємо як ім'я+рівень (регідрація через
+        // PathwayManager).
         if (capturedPathway != null && capturedSequence != null) {
             key.setString("pathway", capturedPathway.getName());
             key.setInt("sequence", capturedSequence.level());
@@ -203,24 +247,25 @@ public class MarionetteMinionTrait extends Trait {
                 LOGGER.warning("Маріонетка має некоректний owner UUID: " + ownerStr);
             }
         }
-        originalPlayerName   = emptyToNull(key.getString("name", ""));
-        skinTextureValue     = emptyToNull(key.getString("skin.value", ""));
+        originalPlayerName = emptyToNull(key.getString("name", ""));
+        skinTextureValue = emptyToNull(key.getString("skin.value", ""));
         skinTextureSignature = emptyToNull(key.getString("skin.signature", ""));
         // Старі saves.yml без поля → PLAYER (маріонетки-мобів там ще не було).
         marionetteEntityType = key.getString("entityType", org.bukkit.entity.EntityType.PLAYER.name());
 
-        capturedSpirituality    = key.getInt("spirituality", 0);
+        capturedSpirituality = key.getInt("spirituality", 0);
         capturedMaxSpirituality = key.getInt("maxSpirituality", 0);
-        capturedHealth          = key.getDouble("health", 20.0);
-        capturedMaxHealth       = key.getDouble("maxHealth", 20.0);
+        capturedHealth = key.getDouble("health", 20.0);
+        capturedMaxHealth = key.getDouble("maxHealth", 20.0);
 
-        // Регідрація шляху: невідомий/відсутній шлях → маріонетка лишається не-Потойбічною.
+        // Регідрація шляху: невідомий/відсутній шлях → маріонетка лишається
+        // не-Потойбічною.
         String pathwayName = key.getString("pathway", "");
         if (!pathwayName.isEmpty() && pathwayManager != null) {
             Pathway pathway = pathwayManager.getPathway(pathwayName);
             int level = key.getInt("sequence", -1);
             if (pathway != null && level >= 0 && level <= 9) {
-                capturedPathway  = pathway;
+                capturedPathway = pathway;
                 capturedSequence = Sequence.of(level);
             } else {
                 LOGGER.warning("Не вдалося відновити шлях маріонетки: '" + pathwayName

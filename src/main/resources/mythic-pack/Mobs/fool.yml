@@ -27,6 +27,14 @@ fool_thousand_faced_hunter_6:
   Options:
     MovementSpeed: 0.28
     Scale: 1.35
+  # BetterModel. Модель зроблена 32 юніти (2 блоки = зріст відьми), тож розмір веде ТІЛЬКИ
+  # Options.Scale (щоб ріс і хітбокс) — у model{} scale= нема, інакше множиться вдвічі.
+  # ~onSpawnOrLoad, а не ~onSpawn: інакше модель зникне після перезавантаження чанка.
+  # Анімації кастів (cast_bolt/cast_blade/flame_jump/recoil) вішає state{} всередині самих
+  # метаскілів (Skills/fool.yml) — лише там відомо, який скіл справді випав із kitcast.
+  Skills:
+  - model{mid=fool_thousand_faced_hunter_6} @self ~onSpawnOrLoad
+  - state{s=attack;li=2;lo=2} @self ~onAttack
 
 fool_ancient_wraith_5:
   Template: MA_Fool_S5
@@ -37,6 +45,13 @@ fool_ancient_wraith_5:
   Options:
     MovementSpeed: 0.3
     Scale: 1.55
+  # BetterModel. Розмір задає ТІЛЬКИ Options.Scale (щоб ріс і хітбокс), тож у model{} scale= нема —
+  # інакше множиться вдвічі. ~onSpawnOrLoad, а не ~onSpawn: інакше модель зникне після
+  # перезавантаження чанка. Анімації кастів вішає state{} всередині самих метаскілів
+  # (Skills/fool.yml) — лише там відомо, який скіл справді випав із kitcast.
+  Skills:
+  - model{mid=fool_ancient_wraith_5} @self ~onSpawnOrLoad
+  - state{s=attack;li=2;lo=2} @self ~onAttack
 
 fool_deep_sea_naga_6:
   Template: MA_Fool_S6
