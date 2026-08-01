@@ -615,6 +615,405 @@
           "type": "model",
           "model": "item/thousand_faced_hunter_pituitary"
         }
+      },
+      {
+        "when": "aconite_juice",
+        "model": {
+          "type": "model",
+          "model": "item/aconite_juice"
+        }
+      },
+      {
+        "when": "anothers_tears",
+        "model": {
+          "type": "model",
+          "model": "item/anothers_tears"
+        }
+      },
+      {
+        "when": "aqua_fern_juice",
+        "model": {
+          "type": "model",
+          "model": "item/aqua_fern_juice"
+        }
+      },
+      {
+        "when": "black_scaled_shark_fin",
+        "model": {
+          "type": "model",
+          "model": "item/black_scaled_shark_fin"
+        }
+      },
+      {
+        "when": "black_scaled_shark_pituitary",
+        "model": {
+          "type": "model",
+          "model": "item/black_scaled_shark_pituitary"
+        }
+      },
+      {
+        "when": "blood_speckled_black_mosquito",
+        "model": {
+          "type": "model",
+          "model": "item/blood_speckled_black_mosquito"
+        }
+      },
+      {
+        "when": "blue_shadow_falcon_bone",
+        "model": {
+          "type": "model",
+          "model": "item/blue_shadow_falcon_bone"
+        }
+      },
+      {
+        "when": "blue_shadow_falcon_feather",
+        "model": {
+          "type": "model",
+          "model": "item/blue_shadow_falcon_feather"
+        }
+      },
+      {
+        "when": "candle_devourer_core",
+        "model": {
+          "type": "model",
+          "model": "item/candle_devourer_core"
+        }
+      },
+      {
+        "when": "cloaked_specter_attachment",
+        "model": {
+          "type": "model",
+          "model": "item/cloaked_specter_attachment"
+        }
+      },
+      {
+        "when": "cloaked_specter_residual_powder",
+        "model": {
+          "type": "model",
+          "model": "item/cloaked_specter_residual_powder"
+        }
+      },
+      {
+        "when": "crystal_jellyfish_cluster",
+        "model": {
+          "type": "model",
+          "model": "item/crystal_jellyfish_cluster"
+        }
+      },
+      {
+        "when": "crystal_jellyfish_tentacles",
+        "model": {
+          "type": "model",
+          "model": "item/crystal_jellyfish_tentacles"
+        }
+      },
+      {
+        "when": "crystal_sunflower",
+        "model": {
+          "type": "model",
+          "model": "item/crystal_sunflower"
+        }
+      },
+      {
+        "when": "crystal_threadworm",
+        "model": {
+          "type": "model",
+          "model": "item/crystal_threadworm"
+        }
+      },
+      {
+        "when": "dawn_rooster_comb",
+        "model": {
+          "type": "model",
+          "model": "item/dawn_rooster_comb"
+        }
+      },
+      {
+        "when": "dazzling_soul_powder",
+        "model": {
+          "type": "model",
+          "model": "item/dazzling_soul_powder"
+        }
+      },
+      {
+        "when": "deep_diver_alveoli",
+        "model": {
+          "type": "model",
+          "model": "item/deep_diver_alveoli"
+        }
+      },
+      {
+        "when": "deep_diver_tongue_half",
+        "model": {
+          "type": "model",
+          "model": "item/deep_diver_tongue_half"
+        }
+      },
+      {
+        "when": "despiritualized_depraved_breath",
+        "model": {
+          "type": "model",
+          "model": "item/despiritualized_depraved_breath"
+        }
+      },
+      {
+        "when": "dream_eating_rat_blood",
+        "model": {
+          "type": "model",
+          "model": "item/dream_eating_rat_blood"
+        }
+      },
+      {
+        "when": "dream_eating_rat_heart",
+        "model": {
+          "type": "model",
+          "model": "item/dream_eating_rat_heart"
+        }
+      },
+      {
+        "when": "elf_dark_leaf",
+        "model": {
+          "type": "model",
+          "model": "item/elf_dark_leaf"
+        }
+      },
+      {
+        "when": "fingered_citron_powder",
+        "model": {
+          "type": "model",
+          "model": "item/fingered_citron_powder"
+        }
+      },
+      {
+        "when": "heart_of_magma_titan",
+        "model": {
+          "type": "model",
+          "model": "item/heart_of_magma_titan"
+        }
+      },
+      {
+        "when": "human_faced_pitcher_plant",
+        "model": {
+          "type": "model",
+          "model": "item/human_faced_pitcher_plant"
+        }
+      },
+      {
+        "when": "king_dawn_rooster_blood",
+        "model": {
+          "type": "model",
+          "model": "item/king_dawn_rooster_blood"
+        }
+      },
+      {
+        "when": "king_dawn_rooster_comb",
+        "model": {
+          "type": "model",
+          "model": "item/king_dawn_rooster_comb"
+        }
+      },
+      {
+        "when": "larch_essential_oil",
+        "model": {
+          "type": "model",
+          "model": "item/larch_essential_oil"
+        }
+      },
+      {
+        "when": "man_eating_conch",
+        "model": {
+          "type": "model",
+          "model": "item/man_eating_conch"
+        }
+      },
+      {
+        "when": "midsummer_grass",
+        "model": {
+          "type": "model",
+          "model": "item/midsummer_grass"
+        }
+      },
+      {
+        "when": "murloc_bladder",
+        "model": {
+          "type": "model",
+          "model": "item/murloc_bladder"
+        }
+      },
+      {
+        "when": "murloc_scales",
+        "model": {
+          "type": "model",
+          "model": "item/murloc_scales"
+        }
+      },
+      {
+        "when": "pure_white_brilliant_rock",
+        "model": {
+          "type": "model",
+          "model": "item/pure_white_brilliant_rock"
+        }
+      },
+      {
+        "when": "radiance_pact_tree_fruit",
+        "model": {
+          "type": "model",
+          "model": "item/radiance_pact_tree_fruit"
+        }
+      },
+      {
+        "when": "radiance_pact_tree_juice",
+        "model": {
+          "type": "model",
+          "model": "item/radiance_pact_tree_juice"
+        }
+      },
+      {
+        "when": "raging_white_dolphin_blood",
+        "model": {
+          "type": "model",
+          "model": "item/raging_white_dolphin_blood"
+        }
+      },
+      {
+        "when": "raging_white_dolphin_heart",
+        "model": {
+          "type": "model",
+          "model": "item/raging_white_dolphin_heart"
+        }
+      },
+      {
+        "when": "rosemary",
+        "model": {
+          "type": "model",
+          "model": "item/rosemary"
+        }
+      },
+      {
+        "when": "sea_condor_eyeballs",
+        "model": {
+          "type": "model",
+          "model": "item/sea_condor_eyeballs"
+        }
+      },
+      {
+        "when": "sea_condor_feathers",
+        "model": {
+          "type": "model",
+          "model": "item/sea_condor_feathers"
+        }
+      },
+      {
+        "when": "siren_hair_strands",
+        "model": {
+          "type": "model",
+          "model": "item/siren_hair_strands"
+        }
+      },
+      {
+        "when": "siren_rock",
+        "model": {
+          "type": "model",
+          "model": "item/siren_rock"
+        }
+      },
+      {
+        "when": "siren_throat",
+        "model": {
+          "type": "model",
+          "model": "item/siren_throat"
+        }
+      },
+      {
+        "when": "solidified_magma",
+        "model": {
+          "type": "model",
+          "model": "item/solidified_magma"
+        }
+      },
+      {
+        "when": "soul_bewitching_adult_insect",
+        "model": {
+          "type": "model",
+          "model": "item/soul_bewitching_adult_insect"
+        }
+      },
+      {
+        "when": "soul_bewitching_colony_mucus",
+        "model": {
+          "type": "model",
+          "model": "item/soul_bewitching_colony_mucus"
+        }
+      },
+      {
+        "when": "soul_bewitching_insect_larvae",
+        "model": {
+          "type": "model",
+          "model": "item/soul_bewitching_insect_larvae"
+        }
+      },
+      {
+        "when": "sphinx_blood",
+        "model": {
+          "type": "model",
+          "model": "item/sphinx_blood"
+        }
+      },
+      {
+        "when": "sphinx_brain",
+        "model": {
+          "type": "model",
+          "model": "item/sphinx_brain"
+        }
+      },
+      {
+        "when": "spirit_of_depraved_breath",
+        "model": {
+          "type": "model",
+          "model": "item/spirit_of_depraved_breath"
+        }
+      },
+      {
+        "when": "spirit_pact_bird_feather",
+        "model": {
+          "type": "model",
+          "model": "item/spirit_pact_bird_feather"
+        }
+      },
+      {
+        "when": "tree_of_elders_crystalized_roots",
+        "model": {
+          "type": "model",
+          "model": "item/tree_of_elders_crystalized_roots"
+        }
+      },
+      {
+        "when": "verbena_powder",
+        "model": {
+          "type": "model",
+          "model": "item/verbena_powder"
+        }
+      },
+      {
+        "when": "war_cry_bird_beak_segment",
+        "model": {
+          "type": "model",
+          "model": "item/war_cry_bird_beak_segment"
+        }
+      },
+      {
+        "when": "war_cry_bird_breastbone",
+        "model": {
+          "type": "model",
+          "model": "item/war_cry_bird_breastbone"
+        }
+      },
+      {
+        "when": "white_chestnut_balm",
+        "model": {
+          "type": "model",
+          "model": "item/white_chestnut_balm"
+        }
       }
     ]
   }

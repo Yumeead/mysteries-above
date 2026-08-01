@@ -4,14 +4,14 @@
     "property": "custom_model_data",
     "fallback": {
       "type": "model",
-      "model": "item/music_disc_mellohi"
+      "model": "item/music_disc_11"
     },
     "cases": [
       {
-        "when": "gold_pound",
+        "when": "order_cipher_message",
         "model": {
           "type": "model",
-          "model": "item/pound"
+          "model": "item/order_cipher_message"
         }
       }
     ]
