@@ -85,6 +85,8 @@ public class MysteriesAbovePlugin extends JavaPlugin {
                     getServer().dispatchCommand(getServer().getConsoleSender(), "mythicmobs reload"), 20L);
         }
 
+        installBetterModels();
+
         // Register events and commands
         registerEvents();
         registerCommands();
@@ -130,6 +132,26 @@ public class MysteriesAbovePlugin extends JavaPlugin {
         // увімкнення/особливості ядра) — повторюємо скан із запасом; restoreNow() ідемпотентний.
         getServer().getScheduler().runTaskLater(this,
                 () -> services.getMarionetteRestorer().restoreNow(), 40L);
+    }
+
+    /**
+     * Ставить .bbmodel-моделі в plugins/BetterModel/models і перезавантажує BetterModel,
+     * якщо файли змінились (той самий контракт, що й для MythicMobs-паку вище).
+     * BetterModel у softdepend: без нього моби просто рендеряться ванільними, тому мовчки виходимо.
+     * Див. .claude/rules/bettermodel-models.md.
+     */
+    private void installBetterModels() {
+        if (!me.vangoo.infrastructure.bettermodel.BetterModelBridge.isAvailable()) {
+            getLogger().info("BetterModel not installed — modeled creatures will render as vanilla entities.");
+            return;
+        }
+        boolean modelsChanged = new me.vangoo.infrastructure.bettermodel.BetterModelInstaller(this).installOrUpdate();
+        if (modelsChanged) {
+            getServer().dispatchCommand(getServer().getConsoleSender(), "bettermodel reload");
+        }
+        // Реєстр моделей заповнюється асинхронно після reload — перевіряємо із запасом.
+        getServer().getScheduler().runTaskLater(this,
+                () -> me.vangoo.infrastructure.bettermodel.BetterModelBridge.verifyModelsLoaded(this), 60L);
     }
 
     private void startRegenerationScheduler() {
