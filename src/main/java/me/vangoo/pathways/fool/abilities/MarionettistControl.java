@@ -18,6 +18,7 @@ import me.vangoo.infrastructure.abilities.AbilityItemFactory;
 import me.vangoo.infrastructure.citizens.MarionetteMinionTrait;
 import me.vangoo.infrastructure.disguise.EntityDisguiseService;
 import me.vangoo.infrastructure.disguise.PlayerVisibilityRefresher;
+import me.vangoo.pathways.common.SoulWard;
 import me.vangoo.infrastructure.disguise.SkinDisguiseService;
 import me.vangoo.infrastructure.ui.NBTBuilder;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -160,6 +161,9 @@ public class MarionettistControl extends ActiveAbility {
             return AbilityResult.failure("§cЦе не жива ціль для Ниток.");
         if (isMarionetteNpc(target))
             return AbilityResult.failure("§cВи не можете поработити вже існуючу маріонетку.");
+        // Обмін духом (Death, Посл. 6): поки душа цілі підмінена слугою, Нитки не мають за що взятись.
+        if (SoulWard.isWarded(target))
+            return AbilityResult.failure("§cДуша цілі підмінена — Нитки зісковзують.");
 
         int limit = marionetteLimit(ctx.getCasterBeyonder());
         if (countLivingMarionettes(casterId) >= limit)
@@ -1220,7 +1224,12 @@ public class MarionettistControl extends ActiveAbility {
         return null;
     }
 
-    private boolean isMarionetteNpc(LivingEntity e) {
+    /**
+     * Публічна й статична саме тому, що маріонетку мусить упізнавати чужий шлях: вікі каже, що
+     * «as Marionettes are considered dead, a Spirit Guide can interfere and influence a
+     * Marionette» — Мова мертвих (Death, Посл. 6) питає звідси, а не дублює перевірку трейта.
+     */
+    public static boolean isMarionetteNpc(LivingEntity e) {
         if (!CitizensAPI.hasImplementation()) return false;
         NPC npc = CitizensAPI.getNPCRegistry().getNPC(e);
         return npc != null && npc.hasTrait(MarionetteMinionTrait.class);
