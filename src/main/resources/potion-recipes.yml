@@ -83,10 +83,16 @@ recipes:
       auxiliary: [mica_powder]
     6:
       main: [prismatic_chameleon_heart]
-      auxiliary: [liquid_silver_phantom_residue, mimicry_moss_spores, devastated_blank_mask]
+      auxiliary:
+        [
+          liquid_silver_phantom_residue,
+          mimicry_moss_spores,
+          devastated_blank_mask,
+        ]
     5:
       main: [void_beholder_petrified_eye]
-      auxiliary: [condensed_astral_nebula, ancient_rune_powder, pure_spirituality_tear]
+      auxiliary:
+        [condensed_astral_nebula, ancient_rune_powder, pure_spirituality_tear]
 
   Fool:
     9:

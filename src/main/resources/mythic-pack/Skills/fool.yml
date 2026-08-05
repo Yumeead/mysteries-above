@@ -1,8 +1,16 @@
 # ── Кіт S9..S5: мобові версії гравцевих здібностей Fool ──
+#
+# Рядки state{...} @self — анімації BetterModel. Вони стоять ТУТ, а не в описі моба, бо лише
+# метаскіл знає, який саме скіл випав із kitcast (тригера «на конкретний каст» у MythicMobs нема).
+# Для мобів без 3D-моделі state{} — тихий no-op, тож рядки безпечні для всього кіта Fool; коли
+# наступному мобу зроблять модель із тими самими іменами анімацій, вони запрацюють без правок.
+# Усі ці анімації — "once", тому спиняються самі (закільцьована вимагала б state{...;r=true}).
+#
 # Реактивна (поза ГКД): ухилення при отриманні урону (DangerIntuition, S9)
 MA_Fool_S9_DangerIntuition:
   Cooldown: 10
   Skills:
+  - state{s=recoil;li=1;lo=3} @self
   - retreat{strength=0.8;vertical=0.3}
   - potion{type=SPEED;duration=40;level=0;particles=false} @self
   - effect:particles{p=cloud;amount=6;hS=0.3;vS=0.3;y=0.5} @self
@@ -10,6 +18,7 @@ MA_Fool_S9_DangerIntuition:
 # Наступальна: снаряд-лезо (PaperCutter, S8)
 MA_Fool_S8_PaperCutter:
   Skills:
+  - state{s=cast_blade;li=1;lo=3} @self
   - projectile{onHitSkill=MA_Fool_S8_PaperCutter_Hit;velocity=14;interval=1;hitRadius=1;verticalHitRadius=1;maxRange=16}
   - effect:sound{s=entity.snowball.throw;v=1;p=1.4} @self
 MA_Fool_S8_PaperCutter_Hit:
@@ -20,6 +29,7 @@ MA_Fool_S8_PaperCutter_Hit:
 # Наступальна: повітряний болт із відкиданням (AirBullet, S7)
 MA_Fool_S7_AirBullet:
   Skills:
+  - state{s=cast_bolt;li=1;lo=3} @self
   - projectile{onHitSkill=MA_Fool_S7_AirBullet_Hit;velocity=18;interval=1;hitRadius=1.2;verticalHitRadius=1.2;maxRange=16}
   - effect:sound{s=entity.breeze.shoot;v=1;p=1} @self
 MA_Fool_S7_AirBullet_Hit:
@@ -32,6 +42,7 @@ MA_Fool_S7_AirBullet_Hit:
 MA_Fool_S7_FlameJump:
   Cooldown: 8
   Skills:
+  - state{s=flame_jump;li=1;lo=3} @self
   - effect:particles{p=flame;amount=20;hS=0.4;vS=0.6;y=0.5;speed=0.02} @self
   - retreat{strength=1.4;vertical=0.5}
   - effect:sound{s=entity.blaze.shoot;v=1;p=1.2} @self
@@ -40,6 +51,7 @@ MA_Fool_S7_FlameJump:
 # Каст на будь-якого гравця; drainsanity ефективний лише проти Beyonder'ів, але спробу не блокує.
 MA_Fool_S5_Marionette:
   Skills:
+  - state{s=cast_marionette;li=2;lo=3} @self
   - pull{velocity=1.2}
   - potion{type=SLOWNESS;duration=40;level=1;particles=false}
   - drainsanity{amount=1} 0.2
@@ -49,4 +61,5 @@ MA_Fool_S5_Marionette:
 MA_Fool_S5_Puppets:
   Cooldown: 30
   Skills:
+  - state{s=cast_summon;li=2;lo=3} @self
   - summon{mob=MA_FoolPuppet;amount=2;radius=1}

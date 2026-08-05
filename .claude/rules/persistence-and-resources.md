@@ -26,8 +26,11 @@ paths:
 - `plugin.yml` і всі `*.yml` — **Maven-filtered**: у target потрапляє оброблена копія, тож тестуй через `mvn clean package`, а не сирі файли.
 - Файли конфігів і хто їх читає: `config.yml` (в т.ч. ключі `creatures.*`) → `plugin.getConfig()` у `ServiceContainer`; `custom-items.yml` → `CustomItemConfigLoader`; `potion-recipes.yml` → `PotionRecipeConfigLoader`; `creatures.yml` → `CreatureConfigLoader` (правила спавну/луту істот — контент мобів живе в mythic-pack, див. `mythic-creatures.md`); `global_loot.yml` → `LootTableConfigLoader`.
 - `mythic-pack/**` — **нефільтрований** ресурс (копіюється як є через `MythicPackInstaller`; не додавай туди Maven-плейсхолдери `${}`).
+- `bettermodel/models/*.bbmodel` — нефільтрований ресурс (потрапляє під блок `filtering=false`, бо не `*.yml`); ставить `BetterModelInstaller` у `plugins/BetterModel/models`. Текстура вшита в `.bbmodel`, окремий `.png` не потрібен. Див. `bettermodel-models.md`.
 - Кожна команда мусить бути оголошена в `plugin.yml` (permission `mysteriesabove.admin`, default: op); `depend: [Citizens, MythicMobs]`, `softdepend: [CoreProtect]`.
 
 ## Залежності збірки
 
-Shade-йдуть `glowingentities`, `EffectLib`, `triumph-gui`; `paper-api`, `coreprotect` та MythicMobs (`io.lumine:Mythic-Dist`) — `provided` (MythicMobs — plugin-залежність через `depend`, не shade). Нову бібліотеку додавай свідомо: або в shade (росте JAR), або як plugin-залежність у `plugin.yml`.
+Shade-йдуть `glowingentities`, `EffectLib`, `triumph-gui`; `paper-api`, `coreprotect`, MythicMobs (`io.lumine:Mythic-Dist`) та BetterModel (`io.github.toxicity188:bettermodel-bukkit-api`) — `provided` (MythicMobs — plugin-залежність через `depend`, BetterModel — через `softdepend`, обидва не shade). Нову бібліотеку додавай свідомо: або в shade (росте JAR), або як plugin-залежність у `plugin.yml`.
+
+Увага: `bettermodel-bukkit-api` (3.x) — НЕ той самий артефакт, що легасі `io.github.toxicity188:bettermodel` (1.x, застиг на 1.15.2). Версія артефакту збігається з версією самого плагіна BetterModel.

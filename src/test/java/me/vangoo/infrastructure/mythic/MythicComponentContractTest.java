@@ -11,16 +11,19 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * MythicMobs' CustomComponentRegistry instantiates custom components reflectively:
+ * MythicMobs' CustomComponentRegistry instantiates custom components
+ * reflectively:
  * it requires a public constructor taking exactly the load event
  * (MythicMechanicLoadEvent / MythicConditionLoadEvent), optionally preceded by
- * JavaPlugin. A component without such a constructor fails registration at server
+ * JavaPlugin. A component without such a constructor fails registration at
+ * server
  * start with NoSuchMethodException and every skill using it silently breaks.
  */
 class MythicComponentContractTest {
@@ -39,9 +42,11 @@ class MythicComponentContractTest {
 
     /**
      * MythicMobs' skill clock runs on async executor threads and SkillMechanic's
-     * async flag defaults to true (ThreadSafetyLevel.EITHER), so a mechanic touching
+     * async flag defaults to true (ThreadSafetyLevel.EITHER), so a mechanic
+     * touching
      * the Bukkit API trips Paper's AsyncCatcher at runtime. Every mechanic must
-     * therefore declare its own getThreadSafetyLevel() (returning SYNC_ONLY) instead
+     * therefore declare its own getThreadSafetyLevel() (returning SYNC_ONLY)
+     * instead
      * of inheriting the default.
      */
     @Test
@@ -64,10 +69,12 @@ class MythicComponentContractTest {
 
     private List<Class<?>> componentsAnnotatedWith(Class<? extends Annotation> annotation) {
         JavaClasses imported = new ClassFileImporter().importPackages(COMPONENTS_PACKAGE);
-        List<Class<?>> components = imported.stream()
-                .filter(c -> c.isAnnotatedWith(annotation))
-                .map(JavaClass::reflect)
-                .toList();
+        List<Class<?>> components = new ArrayList<>();
+        for (JavaClass c : imported) {
+            if (c.isAnnotatedWith(annotation)) {
+                components.add(c.reflect());
+            }
+        }
         assertFalse(components.isEmpty(),
                 "No @" + annotation.getSimpleName() + " classes found in " + COMPONENTS_PACKAGE
                         + " — package scan is broken");
@@ -75,7 +82,7 @@ class MythicComponentContractTest {
     }
 
     private void assertComponentsHaveLoadEventConstructor(Class<?> loadEvent,
-                                                          Class<? extends Annotation> annotation) {
+            Class<? extends Annotation> annotation) {
         for (Class<?> component : componentsAnnotatedWith(annotation)) {
             assertTrue(hasLoadEventConstructor(component, loadEvent),
                     component.getSimpleName() + " needs a public constructor (" + loadEvent.getSimpleName()
@@ -86,9 +93,11 @@ class MythicComponentContractTest {
     private boolean hasLoadEventConstructor(Class<?> component, Class<?> loadEvent) {
         for (Constructor<?> ctor : component.getConstructors()) {
             Class<?>[] params = ctor.getParameterTypes();
-            if (params.length == 1 && params[0] == loadEvent) return true;
+            if (params.length == 1 && params[0] == loadEvent)
+                return true;
             if (params.length == 2 && params[1] == loadEvent
-                    && params[0] == org.bukkit.plugin.java.JavaPlugin.class) return true;
+                    && params[0] == org.bukkit.plugin.java.JavaPlugin.class)
+                return true;
         }
         return false;
     }

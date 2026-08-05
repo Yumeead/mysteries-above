@@ -1,7 +1,7 @@
 tyrant_murloc_9:
   Template: MA_Tyrant_S9
   Type: DROWNED
-  Display: '&3Мурлок'
+  Display: "&3Мурлок"
   Health: 26
   Damage: 4
   Options:
@@ -11,7 +11,7 @@ tyrant_murloc_9:
 tyrant_deep_diver_8:
   Template: MA_Tyrant_S8
   Type: DROWNED
-  Display: '&3Глибинний Пірнальник'
+  Display: "&3Глибинний Пірнальник"
   Health: 45
   Damage: 6
   Options:
@@ -21,29 +21,47 @@ tyrant_deep_diver_8:
 tyrant_black_scaled_shark_7:
   Template: MA_Tyrant_S7
   Type: GUARDIAN
-  Display: '&8Чорнолуска Акула'
+  Display: "&8Чорнолуска Акула"
   Health: 60
   Damage: 7
   Options:
     MovementSpeed: 0.3
     Scale: 1.3
 
+# Власна 3D-модель (BetterModel). Розмір задає ОДНЕ місце — Options.Scale: модель успадковує
+# масштаб сутності, тож у model{} scale= немає (інакше помножилось би вдруге), зате з
+# Options.Scale росте й хітбокс. Одного рядка model{} досить: махи крилами лежать у моделі
+# під іменем idle — єдиною вбудованою анімацією без предиката, тобто вічним базовим шаром;
+# для фантома це правильно, бо він у повітрі завжди (idle_fly/walk_fly/walk на ньому мертві,
+# див. .claude/rules/bettermodel-models.md). Пози perch/glide/takeoff не вбудовані й чекають
+# на механіку посадки.
 tyrant_sea_condor_6:
   Template: MA_Tyrant_S6
   Type: PHANTOM
-  Display: '&bМорський Кондор з Драконячим Оком'
+  Display: "&bМорський Кондор з Драконячим Оком"
   Health: 95
   Damage: 8
   Options:
     MovementSpeed: 0.32
     Scale: 1.4
+  Skills:
+    - model{mid=sea_condor} @self ~onSpawnOrLoad
 
+# Єдиний моб з власною 3D-моделлю (BetterModel). Skills тут ДОПОВНЮЮТЬ, а не затирають
+# скіли шаблону MA_Tyrant_S5: MythicConfig.merge робить addAll для списків.
+# idle/walk/death — вбудовані анімації BetterModel, він програє їх сам; attack вбудованим
+# НЕ є, тому його запускає state{} на ~onAttack. Тригер моделі — ~onSpawnOrLoad, а не ~onSpawn:
+# інакше після вивантаження/завантаження чанка моб лишився б без моделі.
+# Див. .claude/rules/bettermodel-models.md.
 tyrant_siren_5:
   Template: MA_Tyrant_S5
   Type: DROWNED
-  Display: '&bМорська Сирена'
+  Display: "&bМорська Сирена"
   Health: 180
   Damage: 12
   Options:
     MovementSpeed: 0.3
-    Scale: 1.6
+    Scale: 1
+  Skills:
+    - model{mid=tyrant_siren_5;scale=1.6} @self ~onSpawnOrLoad
+    - state{s=attack;li=2;lo=2} @self ~onAttack
