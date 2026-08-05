@@ -28,7 +28,7 @@ paths:
 
 Наразі зареєстровано 22 pathways: 9 зі здібностями (Error, Visionary, Door, Justiciar,
 WhiteTower, Fool, Sun, Tyrant — здібності Й рецепти варіння; Death — поки лише
-здібності Посл. 9-8, без рецептів) + 13 заготовок (HangedMan, Hermit, Paragon,
+здібності Посл. 9-5, без рецептів) + 13 заготовок (HangedMan, Hermit, Paragon,
 BlackEmperor, Darkness, TwilightGiant, Mother, Moon, RedPriest, Demoness, Abyss,
 Chained, WheelOfFortune). Кожна заготовка
 має ВЛАСНИЙ пакет `me.vangoo.pathways.<name>` (клас `<Name> extends Pathway` з

@@ -29,6 +29,8 @@ paths:
 
 **One-shot (без стану)** — вистрілив і забув. Форма: чистий VO-рецепт у `domain` → runner тут → тонкий `Ability`-адаптер. Еталон: `SpellRecipe`/`SpellCodec` (domain) → `SpellEffectRunner` → `GeneratedSpell` (`pathways.whitetower.abilities.custom`).
 
+**Тогл, що мусить гаснути сам** — бери `ActiveAbility` + сесію, а НЕ `ToggleablePassiveAbility`. Вимкнути себе тогл-пасивка не вміє: перемикач тримає `PassiveAbilityManager`, і зі здібності до нього не дістатись, тож «до вичерпання духовності» вона не виражає — сила лишиться ввімкненою безкоштовно. Гілка вимкнення повертає `AbilityResult.deferred()` (інакше зняття тогла з'їдає кулдаун і ресурси). Еталони: `SpiritVision`, `CorpseGuise` (обидва death). `ToggleablePassiveAbility` лишається для тоглів, які гасить тільки гравець (`SeerSpiritVision`, `DangerSense`).
+
 **Stateful (сесія)** — живе в часі (`start → tick → cancel`): зони, клони, підміни тіла. Еталон: `AreaOfJurisdiction` + `JurisdictionSession`; також `DiviningRodSession`, `DreamVisionSession` (fool) і `RitualSession` (common). Правила сесій:
 1. Реєстр — **інстанс-поле** `Map<UUID, Session>` (`ConcurrentHashMap`), **ніколи не static**: екземпляр здібності і так спільний для pathway.
 2. Повторний каст **замінює** сесію власника: `remove` + `cancel()` старої перед створенням нової.

@@ -615,6 +615,13 @@
           "type": "model",
           "model": "item/thousand_faced_hunter_pituitary"
         }
+      },
+      {
+        "when": "king_dawn_rooster_blood",
+        "model": {
+          "type": "model",
+          "model": "item/king_dawn_rooster_blood"
+        }
       }
     ]
   }

@@ -71,16 +71,25 @@ Darkness — згодом), тож він живе у файлі **за родо
   (в `infrastructure.mythic.components`).
 - Посилання на метаскіли пінить `MythicPackKitReferenceTest` (kitcast/skill{s=}/onHitSkill/
   randomskill → мусить існувати в Skills/*.yml).
-- Діра в гравцевому ростері (напр. Error 7–5) — кіт не росте: той самий kitcast із коротшими
-  кулдаунами/меншим gcd у нижчому шаблоні.
+- Діра в гравцевому ростері (напр. Sun 6, де здібності не бойові) — кіт не росте: той самий
+  kitcast із коротшими кулдаунами/меншим gcd у нижчому шаблоні.
+- **Шлях зі здібностями МУСИТЬ мати `Skills/<pathway>.yml` і `kitcast` у шаблонах.** Шаблон,
+  де лишились самі `effect:particles`, — це не «мирна» істота, а забутий шлях: моб світиться
+  й нічого не робить. Пиши кіт у той самий момент, коли додаєш шляху перші бойові здібності.
 
 ## Межі (ArchitectureTest)
 
 - `io.lumine..` — ТІЛЬКИ в `me.vangoo.infrastructure.mythic..` (`mythicMobsApiIsConfinedToBridgePackage`).
   Спавн/ідентифікація для решти коду — через `MythicCreatureGateway` (`spawn(id, loc)`, `isCreature`, `creatureId`).
-- Кастомні механіки/умови (`drainsanity`, `scatter`, `isbeyonder`) — в `infrastructure.mythic.components`;
+- Кастомні механіки/умови (`drainsanity`, `scatter`, `isbeyonder`, `stealitem`, `sealabilities`,
+  `stealability`) — в `infrastructure.mythic.components`;
   сервіси беруть зі статичного `MythicBridge` (єдиний дозволений static-виняток: конструктор диктує MythicMobs).
-  Реєстрація компонентів — `MythicBridge.registerComponents(plugin)`, викликати в `onEnable` ПІСЛЯ `MythicBridge.init(beyonderService)`.
+  Реєстрація компонентів — `MythicBridge.registerComponents(plugin)`, викликати в `onEnable` ПІСЛЯ
+  `MythicBridge.init(beyonderService, abilityLockManager, theftLedger)`.
+  **Механіка, що б'є по гравцеві, перевикористовує наявний сервіс, а не заводить власний стан:**
+  `sealabilities` → `AbilityLockManager`, `stealability` → `TheftLedger`
+  (див. `.claude/rules/ability-theft.md`). Новий стан у механіці = другий примус повз
+  `AbilityExecutor`, тобто баг.
   Конструктор компонента — ОБОВʼЯЗКОВО публічний із параметром load-event
   (`MythicMechanicLoadEvent` / `MythicConditionLoadEvent`) — реєстр шукає саме його рефлексією.
   Скіл-клок MythicMobs АСИНХРОННИЙ (дефолт `ThreadSafetyLevel.EITHER`): механіка, що чіпає Bukkit

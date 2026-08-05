@@ -76,7 +76,8 @@ public class MysteriesAbovePlugin extends JavaPlugin {
 
         // MythicMobs bridge: static holder must be initialized before CustomComponentRegistry
         // scans the components package (see .claude/rules/mythic-creatures.md).
-        me.vangoo.infrastructure.mythic.MythicBridge.init(services.getBeyonderService());
+        me.vangoo.infrastructure.mythic.MythicBridge.init(services.getBeyonderService(),
+                services.getAbilityLockManager(), services.getTheftLedger());
         me.vangoo.infrastructure.mythic.MythicBridge.registerComponents(this);
 
         boolean packChanged = new me.vangoo.infrastructure.mythic.MythicPackInstaller(this).installOrUpdate();
@@ -286,6 +287,7 @@ public class MysteriesAbovePlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(services.getGatheringListener(), this);
         getServer().getPluginManager().registerEvents(services.getOrganizerClickListener(), this);
         getServer().getPluginManager().registerEvents(services.getCurrencyExchangeListener(), this);
+        getServer().getPluginManager().registerEvents(services.getRetinueRestoreListener(), this);
 
         ChurchListener churchListener = new ChurchListener(
                 services.getChurchPriestService(), services.getChurchMenu(), services.getChurchService(),

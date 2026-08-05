@@ -220,10 +220,10 @@ public class OrderMenu {
             case RAID -> {
                 ItemStack display = button(Material.TRIPWIRE_HOOK, ChatColor.DARK_RED + "Злом сховища: "
                                 + ChatColor.WHITE + task.targetName(),
-                        ChatColor.GRAY + "Прокрадіться в межі храму глупої ночі й зачекайте:",
+                        ChatColor.GRAY + "Прокрадіться в межі храму вночі й зачекайте:",
                         ChatColor.GRAY + "зв'язковий вийде на вас протягом хвилини",
                         ChatColor.DARK_GRAY + "(або почніть самі: /order raid)",
-                        ChatColor.GRAY + "Тримайтесь у зоні храму, поки триває канал",
+                        ChatColor.GRAY + "Тримайтесь у зоні храму, щоб підтримувати рейд",
                         weightLine(task.weight()),
                         "",
                         ChatColor.GREEN + "▸ Клацніть, щоб здати здобич зі схованки");
